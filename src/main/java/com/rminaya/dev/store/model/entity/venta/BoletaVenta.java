@@ -1,11 +1,15 @@
 package com.rminaya.dev.store.model.entity.venta;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
 @Entity
 @Table(name = "boleta_venta")
 public class BoletaVenta {
@@ -14,36 +18,41 @@ public class BoletaVenta {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String numero;
-    @CreationTimestamp
-//    @Column(name = "fecha_emision", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     @Column(name = "fecha_emision", columnDefinition = "DATETIME")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime fechaEmision;
     @Column(name = "base_imponible")
     private Double baseImponible;
     @Column(name = "importe_igv")
     private Double importeIgv;
-    private Double total;
-
     @ManyToOne
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "boleta_venta_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer"})
     private List<BoletaVentaDetalle> boletaVentaDetalles;
 
+    // CONSTRUCTOR
     public BoletaVenta() {
         this.boletaVentaDetalles = new ArrayList<>();
     }
 
     // MÉTODOS
-    public void calcularTotal() {
+    public Double getTotal() {
 
+        /*
         Double total = 0.0;
-        for (BoletaVentaDetalle detalle : this.boletaVentaDetalles){
+        for (BoletaVentaDetalle detalle : this.boletaVentaDetalles) {
             total += detalle.getTotal();
         }
-
-        this.setTotal(total);
+        return total;
+        */
+        return this.boletaVentaDetalles
+                .stream()
+                .mapToDouble(value -> value.getTotal())
+                .sum();
     }
 
     // GETTERS AND SETTERS
@@ -87,20 +96,12 @@ public class BoletaVenta {
         this.importeIgv = importeIgv;
     }
 
-    public Double getTotal() {
-        return total;
-    }
-
     public Cliente getCliente() {
         return cliente;
     }
 
     public void setCliente(Cliente cliente) {
         this.cliente = cliente;
-    }
-
-    public void setTotal(Double total) {
-        this.total = total;
     }
 
     public List<BoletaVentaDetalle> getBoletaVentaDetalles() {
@@ -111,10 +112,4 @@ public class BoletaVenta {
         this.boletaVentaDetalles = boletaVentaDetalles;
     }
 
-    @Override
-    public String toString() {
-        return "BoletaVenta{" +
-                ", boletaVentaDetalles=" + boletaVentaDetalles +
-                '}';
-    }
 }

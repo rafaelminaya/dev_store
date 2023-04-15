@@ -20,11 +20,14 @@ public class BoletaVentaDetalle {
     private Double baseImponible;
     @Column(name = "importe_igv")
     private Double importeIgv;
-    private Double total;
     @ManyToOne
     @JoinColumn(name = "producto_id")
     private Producto producto;
 
+    // MÉTODOS
+    public Double getTotal() {
+        return this.precioVenta * this.cantidad;
+    }
 
     // GETERS AND SETTERS
 
@@ -76,14 +79,6 @@ public class BoletaVentaDetalle {
         this.importeIgv = importeIgv;
     }
 
-    public Double getTotal() {
-        return total;
-    }
-
-    public void setTotal(Double total) {
-        this.total = total;
-    }
-
     public Producto getProducto() {
         return producto;
     }
@@ -92,14 +87,4 @@ public class BoletaVentaDetalle {
         this.producto = producto;
     }
 
-    @Override
-    public String toString() {
-        return "BoletaVentaDetalle{" +
-                "id=" + id +
-                ", cantidad=" + cantidad +
-                ", precioCompra=" + precioCompra +
-                ", precioVenta=" + precioVenta +
-                ", producto=" + producto +
-                '}';
-    }
 }

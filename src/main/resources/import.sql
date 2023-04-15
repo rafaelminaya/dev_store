@@ -1,3 +1,7 @@
+-- TIPO OPERACION
+INSERT INTO tipo_operacion (nombre) VALUES ('Venta');
+INSERT INTO tipo_operacion (nombre) VALUES ('Consignacion recibida');
+INSERT INTO tipo_operacion (nombre) VALUES ('Consignacion entregada');
 -- MARCAS
 INSERT INTO marcas (nombre) VALUES ('Ralph Lauren');
 INSERT INTO marcas (nombre) VALUES ('Levis');
@@ -19,25 +23,38 @@ INSERT INTO clientes (dni, nombre, direccion, telefono) VALUES ('08459685', 'Ism
 INSERT INTO clientes (dni, nombre, direccion, telefono) VALUES ('48569215', 'Sara Flores', 'Surquillo', '968541236');
 INSERT INTO clientes (dni, nombre, direccion, telefono) VALUES ('45872014', 'Gabriela Juarez', 'Surco', '968572056');
 -- PRODUCTOS
-INSERT INTO productos (nombre, precio_compra, precio_venta, marca_id) VALUES ('Camiseta azul hombre', 45.0, 75.0, 1);
-INSERT INTO productos (nombre, precio_compra, precio_venta, marca_id) VALUES ('Polo negro hombre', 35.0, 60.5, 1);
-INSERT INTO productos (nombre, precio_compra, precio_venta, marca_id) VALUES ('Pantalon Jean azul hombre', 80.0, 120.5, 2);
-INSERT INTO productos (nombre, precio_compra, precio_venta, marca_id) VALUES ('Pantalon negro vestir hombre', 100.0, 160.0, 2);
-INSERT INTO productos (nombre, precio_compra, precio_venta, marca_id) VALUES ('Camisa vino tinto hombre', 80.0, 140.0, 3);
-INSERT INTO productos (nombre, precio_compra, precio_venta, marca_id) VALUES ('Gorra blanca hombre', 100.0, 170.0, 3);
-INSERT INTO productos (nombre, precio_compra, precio_venta, marca_id) VALUES ('Correa marron hombre', 110.0, 180.0, 3);
+INSERT INTO productos (codigo, nombre, talla, color, precio_compra, precio_venta, marca_id)  VALUES ('CA-Z', 'Camiseta hombre','M', 'AZUL', 45.0, 75.0, 1);
+INSERT INTO productos (codigo, nombre, talla, color, precio_compra, precio_venta, marca_id) VALUES ('CA-Z','Polo hombre','L','NEGRO', 36.3, 60.5, 1);
+INSERT INTO productos (codigo, nombre, talla, color, precio_compra, precio_venta, marca_id) VALUES ('CA-P','Pantalon Jean hombre','32','AZUL', 90.0, 120.0, 2);
+INSERT INTO productos (codigo, nombre, talla, color, precio_compra, precio_venta, marca_id) VALUES ('CA-P','Pantalon vestir hombre','34','NEGRO', 120.0, 160.0, 2);
+INSERT INTO productos (codigo, nombre, talla, color, precio_compra, precio_venta, marca_id) VALUES ('CA-Z','Camisa hombre','S','VINO TINTO', 105.0, 140.0, 3);
+INSERT INTO productos (codigo, nombre, talla, color, precio_compra, precio_venta, marca_id) VALUES ('CA-G','Gorra hombre', 'M','BLANCO', 100.0, 170.0, 3);
+INSERT INTO productos (codigo, nombre, talla, color, precio_compra, precio_venta, marca_id) VALUES ('CA-C','Correa marron hombre','L','MARRON', 110.0, 180.0, 3);
 -- GUIA REMISION
-INSERT INTO guia_remision (numero, fecha_emision, porcentaje_comision, total, proveedor_id) VALUES ('110', NOW(), 20, 2500, 1);
-INSERT INTO guia_remision (numero, fecha_emision, porcentaje_comision, total, proveedor_id) VALUES ('110', NOW(), 25, 4500, 2);
-INSERT INTO guia_remision (numero, fecha_emision, porcentaje_comision, total, proveedor_id) VALUES ('112', NOW(), 30, 3000, 3);
+INSERT INTO guia_remision (numero, fecha_emision, porcentaje_comision, proveedor_id, procesado, eliminado) VALUES ('110', NOW(), 40, 1, 0, 0);
+INSERT INTO guia_remision (numero, fecha_emision, porcentaje_comision, proveedor_id, procesado, eliminado) VALUES ('111', NOW(), 25, 2, 0, 0);
 -- GUIA REMISION DETALLE
-INSERT INTO guia_emision_detalle (cantidad, precio_compra, producto_id, total, guia_remision_id) VALUES (12, 45.0, 1, 540.0, 1);
-INSERT INTO guia_emision_detalle (cantidad, precio_compra, producto_id, total, guia_remision_id) VALUES (10, 30.5, 2, 350.0, 1);
-INSERT INTO guia_emision_detalle (cantidad, precio_compra, producto_id, total, guia_remision_id) VALUES (18, 80.0, 3, 1440.0, 2);
-INSERT INTO guia_emision_detalle (cantidad, precio_compra, producto_id, total, guia_remision_id) VALUES (7, 100.0, 4, 700.0, 2);
-INSERT INTO guia_emision_detalle (cantidad, precio_compra, producto_id, total, guia_remision_id) VALUES (20, 80.0, 5, 1600.0, 2);
+INSERT INTO guia_emision_detalle (cantidad, precio_venta, producto_id, guia_remision_id, eliminado) VALUES (12, 75.0, 1, 1, 0);
+INSERT INTO guia_emision_detalle (cantidad, precio_venta, producto_id, guia_remision_id, eliminado) VALUES (10, 60.5, 2, 1, 0);
+INSERT INTO guia_emision_detalle (cantidad, precio_venta, producto_id, guia_remision_id, eliminado) VALUES (18, 120.0, 3, 2, 0);
+INSERT INTO guia_emision_detalle (cantidad, precio_venta, producto_id, guia_remision_id, eliminado) VALUES (7, 160.0, 4, 2, 0);
+INSERT INTO guia_emision_detalle (cantidad, precio_venta, producto_id, guia_remision_id, eliminado) VALUES (20, 140.0, 5, 2, 0);
 -- BOLETA VENTA
-INSERT INTO boleta_venta (numero, fecha_emision, base_imponible, importe_igv, total, cliente_id) VALUES ('100', NOW(), 111.11, 24.39, 135.5, 1);
+INSERT INTO boleta_venta (numero, fecha_emision, base_imponible, importe_igv, cliente_id) VALUES ('100', NOW(), 111.11, 24.39, 1);
 -- BOLETA VENTA DETALLE
-INSERT INTO boleta_venta_detalle (cantidad, precio_compra, precio_venta, base_imponible, importe_igv, total, producto_id, boleta_venta_id) VALUES (1, 45.0, 75.0, 61.5, 13.5, 75.0, 1, 1);
-INSERT INTO boleta_venta_detalle (cantidad, precio_compra, precio_venta, base_imponible, importe_igv, total, producto_id, boleta_venta_id) VALUES (1, 35.0, 60.5, 49.61, 10.89, 60.5, 1, 1);
+INSERT INTO boleta_venta_detalle (cantidad, precio_compra, precio_venta, base_imponible, importe_igv, producto_id, boleta_venta_id) VALUES (1, 45.0, 75.0, 61.5, 13.5, 1, 1);
+INSERT INTO boleta_venta_detalle (cantidad, precio_compra, precio_venta, base_imponible, importe_igv, producto_id, boleta_venta_id) VALUES (1, 35.0, 60.5, 49.61, 10.89, 2, 1);
+-- KARDEX
+INSERT INTO kardex (numero, comprobante_id, fecha_emision, tipo_operacion_id) VALUES ('110', 1, NOW(), 2);
+INSERT INTO kardex (numero, comprobante_id, fecha_emision, tipo_operacion_id) VALUES ('111', 2,NOW(), 2);
+INSERT INTO kardex (numero, comprobante_id, fecha_emision, tipo_operacion_id) VALUES ('100', 1, NOW(), 1);
+-- KARDEX DETALLE
+-- TODO - modificar los 2 últimos registros correspondientes a la venta, reemplazndo los 3 ceros por los números correctos
+INSERT INTO kardex_detalle (fecha_emision, entrada_cantidad, entrada_precio, entrada_total, salida_cantidad, salida_precio, salida_total, saldo_cantidad, saldo_precio, saldo_total, producto_id, kardex_id) VALUES (NOW(), 12, 75, 900, 0, 0, 0, 12, 75, 900, 1, 1);
+INSERT INTO kardex_detalle (fecha_emision, entrada_cantidad, entrada_precio, entrada_total, salida_cantidad, salida_precio, salida_total, saldo_cantidad, saldo_precio, saldo_total, producto_id, kardex_id) VALUES (NOW(), 10, 60.5, 605, 0, 0, 0, 10, 60.5, 605, 2, 1);
+INSERT INTO kardex_detalle (fecha_emision, entrada_cantidad, entrada_precio, entrada_total, salida_cantidad, salida_precio, salida_total, saldo_cantidad, saldo_precio, saldo_total, producto_id, kardex_id) VALUES (NOW(), 18, 120.0, 2160.0, 0, 0, 0, 18, 120.0, 2160.0, 3, 2);
+INSERT INTO kardex_detalle (fecha_emision, entrada_cantidad, entrada_precio, entrada_total, salida_cantidad, salida_precio, salida_total, saldo_cantidad, saldo_precio, saldo_total, producto_id, kardex_id) VALUES (NOW(), 7, 160.0, 1120.0, 0, 0, 0, 7, 160.0, 1120.0, 4, 2);
+INSERT INTO kardex_detalle (fecha_emision, entrada_cantidad, entrada_precio, entrada_total, salida_cantidad, salida_precio, salida_total, saldo_cantidad, saldo_precio, saldo_total, producto_id, kardex_id) VALUES (NOW(), 20, 140.0, 2800.0, 0, 0, 0, 20, 140.0, 2800.0, 5, 2);
+INSERT INTO kardex_detalle (fecha_emision, entrada_cantidad, entrada_precio, entrada_total, salida_cantidad, salida_precio, salida_total, saldo_cantidad, saldo_precio, saldo_total, producto_id, kardex_id) VALUES (NOW(), 0, 0, 0, 1, 75.0, 75.0, 0, 0, 0, 1, 3);
+INSERT INTO kardex_detalle (fecha_emision, entrada_cantidad, entrada_precio, entrada_total, salida_cantidad, salida_precio, salida_total, saldo_cantidad, saldo_precio, saldo_total, producto_id, kardex_id) VALUES (NOW(), 0, 0, 0, 1, 60.5, 60.5, 0, 0, 0, 2, 3);
+

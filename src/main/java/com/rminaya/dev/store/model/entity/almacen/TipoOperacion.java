@@ -1,14 +1,14 @@
-package com.rminaya.dev.store.model.entity.common;
+package com.rminaya.dev.store.model.entity.almacen;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "marcas")
-public class Marca {
-    //ATRIBUTOS
+@Table(name = "tipo_operacion")
+public class TipoOperacion {
+    // ATRIBUTOS
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    Long id;
     private String nombre;
 
     // GETTERS AND SETTERS
@@ -26,13 +26,5 @@ public class Marca {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
-    }
-
-    @Override
-    public String toString() {
-        return "Marca{" +
-                "id=" + id +
-                ", nombre='" + nombre + '\'' +
-                '}';
     }
 }

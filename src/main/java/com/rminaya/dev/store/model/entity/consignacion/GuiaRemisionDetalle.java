@@ -1,5 +1,7 @@
 package com.rminaya.dev.store.model.entity.consignacion;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.rminaya.dev.store.model.entity.common.Producto;
 
 import javax.persistence.*;
@@ -12,12 +14,37 @@ public class GuiaRemisionDetalle {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Integer cantidad;
-    @Column(name = "precio_compra")
-    private Double precioCompra;
-    @ManyToOne
+    private Double precioVenta;
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "producto_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer"})
     private Producto producto;
-    private Double total;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    //@JoinColumn(name = "guia_remision_id")
+    @JsonIgnoreProperties({"guiaRemisionDetalles","hibernateLazyInitializer"})
+    @JsonIgnore
+    private GuiaRemision guiaRemision;
+    @Column(name = "eliminado", columnDefinition = "boolean default false")
+    private Boolean eliminado = false;
+
+    // MÉTODOS
+    public Double getPorcentajeComision() {
+        return this.guiaRemision.getPorcentajeComision();
+    }
+
+    public Double getImporteComision() {
+        return this.precioVenta * (this.getPorcentajeComision() / 100);
+//        return this.precioVenta * (this.porcentajeComision / 100);
+    }
+
+    public Double getPrecioCompra() {
+        return this.precioVenta - this.getImporteComision();
+    }
+
+    public Double getTotal() {
+        return this.precioVenta * this.cantidad;
+    }
 
     // GETTERS AND SETTERS
     public Long getId() {
@@ -36,12 +63,12 @@ public class GuiaRemisionDetalle {
         this.cantidad = cantidad;
     }
 
-    public Double getPrecioCompra() {
-        return precioCompra;
+    public Double getPrecioVenta() {
+        return precioVenta;
     }
 
-    public void setPrecioCompra(Double precioCompra) {
-        this.precioCompra = precioCompra;
+    public void setPrecioVenta(Double precioVenta) {
+        this.precioVenta = precioVenta;
     }
 
     public Producto getProducto() {
@@ -52,11 +79,31 @@ public class GuiaRemisionDetalle {
         this.producto = producto;
     }
 
-    public Double getTotal() {
-        return total;
+    public GuiaRemision getGuiaRemision() {
+        return guiaRemision;
     }
 
-    public void setTotal(Double total) {
-        this.total = total;
+    public void setGuiaRemision(GuiaRemision guiaRemision) {
+        this.guiaRemision = guiaRemision;
+    }
+
+    public Boolean getEliminado() {
+        return eliminado;
+    }
+
+    public void setEliminado(Boolean eliminado) {
+        this.eliminado = eliminado;
+    }
+
+    @Override
+    public String toString() {
+        return "GuiaRemisionDetalle{" +
+                "id=" + id +
+                ", cantidad=" + cantidad +
+                ", precioVenta=" + precioVenta +
+                ", producto=" + producto +
+                ", guiaRemision=" + guiaRemision +
+                ", eliminado=" + eliminado +
+                '}';
     }
 }
