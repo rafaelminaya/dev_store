@@ -32,9 +32,9 @@ public class GuiaRemision {
     //@JoinColumn(name = "guia_remision_id")
     @JsonIgnoreProperties(value = {"guiaremision", "hibernateLazyInitializer", "handler"}, allowSetters = true)
     private List<GuiaRemisionDetalle> guiaRemisionDetalles;
-    @Column(name = "procesado", columnDefinition = "boolean default false")
+    @Column(columnDefinition = "boolean default false")
     private Boolean procesado = false;
-    @Column(name = "eliminado", columnDefinition = "boolean default false")
+    @Column(columnDefinition = "boolean default false")
     private Boolean eliminado = false;
 
     // CONSTRUCTOR
@@ -63,10 +63,6 @@ public class GuiaRemision {
 
     public Double getTotalImporteComision() {
         return this.getTotalPrecioVenta() - this.getTotalPrecioCompra();
-    }
-
-    public void procesarKardex(GuiaRemision guiaRemision) {
-
     }
 
     // GETTERS AND SETTERS

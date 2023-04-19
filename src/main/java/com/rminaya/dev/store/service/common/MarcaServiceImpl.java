@@ -1,8 +1,11 @@
 package com.rminaya.dev.store.service.common;
 
+import com.rminaya.dev.store.exceptions.DevStoreExceptions;
 import com.rminaya.dev.store.model.entity.common.Marca;
 import com.rminaya.dev.store.repository.MarcaRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -17,22 +20,33 @@ public class MarcaServiceImpl implements MarcaService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Marca> findAll() {
-        return this.marcaRepository.findAll();
+        return this.marcaRepository.findAll()
+                .stream()
+                .filter(marca -> marca.getEliminado().equals(false))
+                .toList();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Marca findById(Long id) {
-        return this.marcaRepository.findById(id).orElseThrow();
+        return this.marcaRepository.findById(id)
+                .filter(marca -> marca.getEliminado().equals(false))
+                .orElseThrow(() -> new DevStoreExceptions("No se encontró la marca.", HttpStatus.NOT_FOUND));
     }
 
     @Override
-    public Marca save(Marca marca) {
-        return this.marcaRepository.save(marca);
+    @Transactional
+    public Long save(Marca marca) {
+        return this.marcaRepository.save(marca).getId();
     }
 
     @Override
+    @Transactional
     public void deleteById(Long id) {
-        this.marcaRepository.deleteById(id);
+        Marca marca = findById(id);
+        marca.setEliminado(true);
+        this.marcaRepository.save(marca);
     }
 }

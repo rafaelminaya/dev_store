@@ -136,4 +136,22 @@ public class KardexDetalle {
     public void setSaldoTotal(Double saldoTotal) {
         this.saldoTotal = saldoTotal;
     }
+
+    @Override
+    public String toString() {
+        return "KardexDetalle{" +
+                "id=" + id +
+                ", fechaEmision=" + fechaEmision +
+                ", entradaCantidad=" + entradaCantidad +
+                ", entradaPrecio=" + entradaPrecio +
+                ", entradaTotal=" + entradaTotal +
+                ", salidaCantidad=" + salidaCantidad +
+                ", salidaPrecio=" + salidaPrecio +
+                ", salidaTotal=" + salidaTotal +
+                ", saldoCantidad=" + saldoCantidad +
+                ", saldoPrecio=" + saldoPrecio +
+                ", saldoTotal=" + saldoTotal +
+                ", producto=" + producto +
+                '}';
+    }
 }

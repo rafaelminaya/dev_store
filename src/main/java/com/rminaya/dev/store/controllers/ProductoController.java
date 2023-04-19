@@ -8,40 +8,33 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @CrossOrigin(origins = { "http://localhost:4200" })
 @RestController
 @RequestMapping(value = "/api/productos")
 public class ProductoController {
-
     @Autowired
     private ProductoService productoService;
 
-    @GetMapping(value = "/listar")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<Producto> listar() {
         return this.productoService.findAll();
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<?> obtener(@PathVariable Long id) {
-        Producto producto;
-        try {
-            producto = this.productoService.findById(id);
-        } catch (NoSuchElementException ex) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Producto> obtener(@PathVariable("id") Long productoId) {
+        Producto producto = this.productoService.findById(productoId);
         return ResponseEntity.ok(producto);
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Producto guardar(@RequestBody Producto producto) {
-        return this.productoService.save(producto);
+    public ResponseEntity<Long> guardar(@RequestBody Producto producto) {
+        Long productoId = this.productoService.save(producto);
+        return new ResponseEntity<>(productoId, HttpStatus.CREATED);
     }
 
-    @DeleteMapping(value = "/{id}")
+    @PutMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminar(@PathVariable Long id) {
         this.productoService.deleteById(id);

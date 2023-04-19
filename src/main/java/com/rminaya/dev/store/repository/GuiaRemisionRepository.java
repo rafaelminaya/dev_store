@@ -9,4 +9,7 @@ import java.util.Optional;
 public interface GuiaRemisionRepository extends JpaRepository<GuiaRemision, Long> {
     @Query("select g from GuiaRemision g where id = ?1 and procesado = 0")
     Optional<GuiaRemision> findByIdAndNoProcesado(Long id);
+
+    @Query("select g from GuiaRemision g where id = ?1 and procesado = 1")
+    Optional<GuiaRemision> findByIdAndProcesado(Long id);
 }

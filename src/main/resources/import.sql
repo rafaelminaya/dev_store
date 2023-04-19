@@ -31,8 +31,8 @@ INSERT INTO productos (codigo, nombre, talla, color, precio_compra, precio_venta
 INSERT INTO productos (codigo, nombre, talla, color, precio_compra, precio_venta, marca_id) VALUES ('CA-G','Gorra hombre', 'M','BLANCO', 100.0, 170.0, 3);
 INSERT INTO productos (codigo, nombre, talla, color, precio_compra, precio_venta, marca_id) VALUES ('CA-C','Correa marron hombre','L','MARRON', 110.0, 180.0, 3);
 -- GUIA REMISION
-INSERT INTO guia_remision (numero, fecha_emision, porcentaje_comision, proveedor_id, procesado, eliminado) VALUES ('110', NOW(), 40, 1, 0, 0);
-INSERT INTO guia_remision (numero, fecha_emision, porcentaje_comision, proveedor_id, procesado, eliminado) VALUES ('111', NOW(), 25, 2, 0, 0);
+INSERT INTO guia_remision (numero, fecha_emision, porcentaje_comision, proveedor_id, procesado, eliminado) VALUES ('100', DATE_SUB(now(), INTERVAL 2 DAY), 40, 1, 0, 0);
+INSERT INTO guia_remision (numero, fecha_emision, porcentaje_comision, proveedor_id, procesado, eliminado) VALUES ('101', DATE_SUB(now(), INTERVAL 2 DAY), 25, 2, 0, 0);
 -- GUIA REMISION DETALLE
 INSERT INTO guia_emision_detalle (cantidad, precio_venta, producto_id, guia_remision_id, eliminado) VALUES (12, 75.0, 1, 1, 0);
 INSERT INTO guia_emision_detalle (cantidad, precio_venta, producto_id, guia_remision_id, eliminado) VALUES (10, 60.5, 2, 1, 0);
@@ -40,21 +40,21 @@ INSERT INTO guia_emision_detalle (cantidad, precio_venta, producto_id, guia_remi
 INSERT INTO guia_emision_detalle (cantidad, precio_venta, producto_id, guia_remision_id, eliminado) VALUES (7, 160.0, 4, 2, 0);
 INSERT INTO guia_emision_detalle (cantidad, precio_venta, producto_id, guia_remision_id, eliminado) VALUES (20, 140.0, 5, 2, 0);
 -- BOLETA VENTA
-INSERT INTO boleta_venta (numero, fecha_emision, base_imponible, importe_igv, cliente_id) VALUES ('100', NOW(), 111.11, 24.39, 1);
+INSERT INTO boleta_venta (numero, fecha_emision, base_imponible, importe_igv, cliente_id) VALUES ('500', DATE_SUB(now(), INTERVAL 1 DAY), 111.11, 24.39, 1);
 -- BOLETA VENTA DETALLE
 INSERT INTO boleta_venta_detalle (cantidad, precio_compra, precio_venta, base_imponible, importe_igv, producto_id, boleta_venta_id) VALUES (1, 45.0, 75.0, 61.5, 13.5, 1, 1);
 INSERT INTO boleta_venta_detalle (cantidad, precio_compra, precio_venta, base_imponible, importe_igv, producto_id, boleta_venta_id) VALUES (1, 35.0, 60.5, 49.61, 10.89, 2, 1);
 -- KARDEX
-INSERT INTO kardex (numero, comprobante_id, fecha_emision, tipo_operacion_id) VALUES ('110', 1, NOW(), 2);
-INSERT INTO kardex (numero, comprobante_id, fecha_emision, tipo_operacion_id) VALUES ('111', 2,NOW(), 2);
-INSERT INTO kardex (numero, comprobante_id, fecha_emision, tipo_operacion_id) VALUES ('100', 1, NOW(), 1);
+INSERT INTO kardex (numero, comprobante_id, fecha_emision, tipo_operacion_id) VALUES ('100', 1, DATE_SUB(now(), INTERVAL 2 DAY), 2);
+INSERT INTO kardex (numero, comprobante_id, fecha_emision, tipo_operacion_id) VALUES ('101', 2, DATE_SUB(now(), INTERVAL 2 DAY), 2);
+INSERT INTO kardex (numero, comprobante_id, fecha_emision, tipo_operacion_id) VALUES ('500', 1, DATE_SUB(now(), INTERVAL 1 DAY), 1);
 -- KARDEX DETALLE
--- TODO - modificar los 2 últimos registros correspondientes a la venta, reemplazndo los 3 ceros por los números correctos
-INSERT INTO kardex_detalle (fecha_emision, entrada_cantidad, entrada_precio, entrada_total, salida_cantidad, salida_precio, salida_total, saldo_cantidad, saldo_precio, saldo_total, producto_id, kardex_id) VALUES (NOW(), 12, 75, 900, 0, 0, 0, 12, 75, 900, 1, 1);
-INSERT INTO kardex_detalle (fecha_emision, entrada_cantidad, entrada_precio, entrada_total, salida_cantidad, salida_precio, salida_total, saldo_cantidad, saldo_precio, saldo_total, producto_id, kardex_id) VALUES (NOW(), 10, 60.5, 605, 0, 0, 0, 10, 60.5, 605, 2, 1);
-INSERT INTO kardex_detalle (fecha_emision, entrada_cantidad, entrada_precio, entrada_total, salida_cantidad, salida_precio, salida_total, saldo_cantidad, saldo_precio, saldo_total, producto_id, kardex_id) VALUES (NOW(), 18, 120.0, 2160.0, 0, 0, 0, 18, 120.0, 2160.0, 3, 2);
-INSERT INTO kardex_detalle (fecha_emision, entrada_cantidad, entrada_precio, entrada_total, salida_cantidad, salida_precio, salida_total, saldo_cantidad, saldo_precio, saldo_total, producto_id, kardex_id) VALUES (NOW(), 7, 160.0, 1120.0, 0, 0, 0, 7, 160.0, 1120.0, 4, 2);
-INSERT INTO kardex_detalle (fecha_emision, entrada_cantidad, entrada_precio, entrada_total, salida_cantidad, salida_precio, salida_total, saldo_cantidad, saldo_precio, saldo_total, producto_id, kardex_id) VALUES (NOW(), 20, 140.0, 2800.0, 0, 0, 0, 20, 140.0, 2800.0, 5, 2);
-INSERT INTO kardex_detalle (fecha_emision, entrada_cantidad, entrada_precio, entrada_total, salida_cantidad, salida_precio, salida_total, saldo_cantidad, saldo_precio, saldo_total, producto_id, kardex_id) VALUES (NOW(), 0, 0, 0, 1, 75.0, 75.0, 0, 0, 0, 1, 3);
-INSERT INTO kardex_detalle (fecha_emision, entrada_cantidad, entrada_precio, entrada_total, salida_cantidad, salida_precio, salida_total, saldo_cantidad, saldo_precio, saldo_total, producto_id, kardex_id) VALUES (NOW(), 0, 0, 0, 1, 60.5, 60.5, 0, 0, 0, 2, 3);
+INSERT INTO kardex_detalle (fecha_emision, entrada_cantidad, entrada_precio, entrada_total, salida_cantidad, salida_precio, salida_total, saldo_cantidad, saldo_precio, saldo_total, producto_id, kardex_id) VALUES (DATE_SUB(now(), INTERVAL 2 DAY), 12, 75, 900, 0, 0, 0, 12, 75, 900, 1, 1);
+INSERT INTO kardex_detalle (fecha_emision, entrada_cantidad, entrada_precio, entrada_total, salida_cantidad, salida_precio, salida_total, saldo_cantidad, saldo_precio, saldo_total, producto_id, kardex_id) VALUES (DATE_SUB(now(), INTERVAL 2 DAY), 10, 60.5, 605, 0, 0, 0, 10, 60.5, 605, 2, 1);
+INSERT INTO kardex_detalle (fecha_emision, entrada_cantidad, entrada_precio, entrada_total, salida_cantidad, salida_precio, salida_total, saldo_cantidad, saldo_precio, saldo_total, producto_id, kardex_id) VALUES (DATE_SUB(now(), INTERVAL 2 DAY), 18, 120.0, 2160.0, 0, 0, 0, 18, 120.0, 2160.0, 3, 2);
+INSERT INTO kardex_detalle (fecha_emision, entrada_cantidad, entrada_precio, entrada_total, salida_cantidad, salida_precio, salida_total, saldo_cantidad, saldo_precio, saldo_total, producto_id, kardex_id) VALUES (DATE_SUB(now(), INTERVAL 2 DAY), 7, 160.0, 1120.0, 0, 0, 0, 7, 160.0, 1120.0, 4, 2);
+INSERT INTO kardex_detalle (fecha_emision, entrada_cantidad, entrada_precio, entrada_total, salida_cantidad, salida_precio, salida_total, saldo_cantidad, saldo_precio, saldo_total, producto_id, kardex_id) VALUES (DATE_SUB(now(), INTERVAL 2 DAY), 20, 140.0, 2800.0, 0, 0, 0, 20, 140.0, 2800.0, 5, 2);
+
+INSERT INTO kardex_detalle (fecha_emision, entrada_cantidad, entrada_precio, entrada_total, salida_cantidad, salida_precio, salida_total, saldo_cantidad, saldo_precio, saldo_total, producto_id, kardex_id) VALUES (DATE_SUB(now(), INTERVAL 1 DAY), 0, 0, 0, 1, 75.0, 75.0, 11, 75.0, 825, 1, 3);
+INSERT INTO kardex_detalle (fecha_emision, entrada_cantidad, entrada_precio, entrada_total, salida_cantidad, salida_precio, salida_total, saldo_cantidad, saldo_precio, saldo_total, producto_id, kardex_id) VALUES (DATE_SUB(now(), INTERVAL 1 DAY), 0, 0, 0, 1, 60.5, 60.5, 9, 60.5, 544.5, 2, 3);
 

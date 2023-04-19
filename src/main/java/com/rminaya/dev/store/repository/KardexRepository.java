@@ -11,14 +11,16 @@ import java.util.List;
 import java.util.Optional;
 
 public interface KardexRepository extends JpaRepository<Kardex, Long> {
-
     @Query("select k from Kardex k where k.comprobanteId=?1 and k.tipoOperacion=?2")
-    Optional<Kardex> kardexByConsignacion(Long guiaRemisionId, Long tipoOperacionId);
+    Optional<Kardex> kardexByIdAndTipoOperacion(Long guiaRemisionId, Long tipoOperacionId);
 
     //TODO : Confirmar si estos 2 métodos deberían estar acá o en "KardexDetalleRepository"
-    @Query(value = "select * from kardex_detalle where producto_id= :producto_id and fecha_emision > :fecha_emision order by fecha_emision asc, id asc" , nativeQuery = true)
+    @Query(value = "select * from kardex_detalle where producto_id= :producto_id and fecha_emision > :fecha_emision order by fecha_emision asc, id asc", nativeQuery = true)
     List<KardexDetalle> KardexDetalleByProductoByFechaEmision(@Param("producto_id") Long produtoId, @Param("fecha_emision") LocalDateTime fechaEmision);
 
-    @Query(value = "select * from kardex_detalle where producto_id = :producto_id and fecha_emision <= :fecha_emision order by fecha_emision desc, id desc", nativeQuery = true)
-    Optional<KardexDetalle> KardexDetalleUltimoSaldoCantidad(@Param("producto_id") Long produtoId, @Param("fecha_emision") LocalDateTime fechaEmision);
+    @Query(value = "select saldo_cantidad from kardex_detalle where producto_id = :producto_id and fecha_emision <= :fecha_emision order by fecha_emision desc, id desc limit 1", nativeQuery = true)
+    Integer KardexDetalleUltimoSaldoCantidad(@Param("producto_id") Long produtoId, @Param("fecha_emision") LocalDateTime fechaEmision);
+
+    @Query("select d from KardexDetalle d join fetch d.producto p where p.id=?1 and d.fechaEmision <=?2 order by d.fechaEmision desc, d.id desc")
+    KardexDetalle KardexDetalleUltimoSaldoCantidad2(Long produtoId, LocalDateTime fechaEmision);
 }

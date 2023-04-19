@@ -14,6 +14,8 @@ public class Proveedor {
     private String razonComercial;
     private String direccion;
     private String telefono;
+    @Column(columnDefinition = "boolean default false")
+    private Boolean eliminado = false;
 
     // GETTERS AND SETTERS
     public Long getId() {
@@ -54,5 +56,13 @@ public class Proveedor {
 
     public void setTelefono(String telefono) {
         this.telefono = telefono;
+    }
+
+    public Boolean getEliminado() {
+        return eliminado;
+    }
+
+    public void setEliminado(Boolean eliminado) {
+        this.eliminado = eliminado;
     }
 }

@@ -10,6 +10,8 @@ public class Marca {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nombre;
+    @Column(columnDefinition = "boolean default false")
+    private Boolean eliminado = false;
 
     // GETTERS AND SETTERS
     public Long getId() {
@@ -28,11 +30,20 @@ public class Marca {
         this.nombre = nombre;
     }
 
+    public Boolean getEliminado() {
+        return eliminado;
+    }
+
+    public void setEliminado(Boolean eliminado) {
+        this.eliminado = eliminado;
+    }
+
     @Override
     public String toString() {
         return "Marca{" +
                 "id=" + id +
                 ", nombre='" + nombre + '\'' +
+                ", eliminado=" + eliminado +
                 '}';
     }
 }

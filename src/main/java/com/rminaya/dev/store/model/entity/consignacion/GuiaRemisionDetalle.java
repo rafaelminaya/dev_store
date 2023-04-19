@@ -42,7 +42,7 @@ public class GuiaRemisionDetalle {
         return this.precioVenta - this.getImporteComision();
     }
 
-    public Double getTotal() {
+    public Double getTotalDetalle() {
         return this.precioVenta * this.cantidad;
     }
 

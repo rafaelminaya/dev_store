@@ -8,17 +8,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
-@CrossOrigin(origins = { "http://localhost:4200" })
+@CrossOrigin(origins = {"http://localhost:4200"})
 @RestController
 @RequestMapping(value = "/api/proveedores")
 public class ProveedorController {
-
     @Autowired
     private ProveedorService proveedorService;
 
-    @GetMapping(value = "/listar")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<Proveedor> listar() {
         return this.proveedorService.findAll();
@@ -26,23 +24,18 @@ public class ProveedorController {
 
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<?> obtener(@PathVariable Long id) {
-        Proveedor proveedor;
-        try {
-            proveedor = this.proveedorService.findById(id);
-        } catch (NoSuchElementException ex) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(proveedor);
+    public ResponseEntity<?> obtener(@PathVariable("id") Long proveedorId) {
+        Proveedor proveedor = this.proveedorService.findById(proveedorId);
+        return new ResponseEntity<>(proveedor, HttpStatus.OK);
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Proveedor guardar(@RequestBody Proveedor proveedor) {
-        return this.proveedorService.save(proveedor);
+    public ResponseEntity<Long> guardar(@RequestBody Proveedor proveedor) {
+        Long proveedorId = this.proveedorService.save(proveedor);
+        return new ResponseEntity<>(proveedorId, HttpStatus.CREATED);
     }
 
-    @DeleteMapping(value = "/{id}")
+    @PutMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminar(@PathVariable Long id) {
         this.proveedorService.deleteById(id);

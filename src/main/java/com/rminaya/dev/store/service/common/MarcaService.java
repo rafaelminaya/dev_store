@@ -7,6 +7,6 @@ import java.util.List;
 public interface MarcaService {
     List<Marca> findAll();
     Marca findById(Long id);
-    Marca save(Marca marca);
+    Long save(Marca marca);
     void deleteById(Long id);
 }

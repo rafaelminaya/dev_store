@@ -12,4 +12,5 @@ public interface BoletaVentaService {
     void deleteById(Long id);
     // kardex
     Kardex saveKardex(Kardex kardex);
+    void anular(Long boletaVentaId);
 }

@@ -8,39 +8,33 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
-@CrossOrigin(origins = { "http://localhost:4200" })
+@CrossOrigin(origins = {"http://localhost:4200"})
 @RestController
 @RequestMapping(value = "/api/marcas")
 public class MarcaController {
     @Autowired
     private MarcaService marcaService;
 
-    @GetMapping(value = "/listar")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<Marca> listar() {
         return this.marcaService.findAll();
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<?> obtener(@PathVariable Long id) {
-        Marca marca;
-        try {
-            marca = this.marcaService.findById(id);
-        } catch (NoSuchElementException ex) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(marca);
+    public ResponseEntity<Marca> obtener(@PathVariable("id") Long marcaId) {
+        Marca marca = this.marcaService.findById(marcaId);
+        return new ResponseEntity<>(marca, HttpStatus.OK);
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Marca guardar(@RequestBody Marca marca) {
-        return this.marcaService.save(marca);
+    public ResponseEntity<Long> guardar(@RequestBody Marca marca) {
+        Long marcaId = this.marcaService.save(marca);
+        return new ResponseEntity<>(marcaId, HttpStatus.CREATED);
     }
 
-    @DeleteMapping(value = "/{id}")
+    @PutMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminar(@PathVariable Long id) {
         this.marcaService.deleteById(id);

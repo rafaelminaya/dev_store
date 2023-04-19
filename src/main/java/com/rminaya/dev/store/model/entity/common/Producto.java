@@ -19,6 +19,8 @@ public class Producto {
     private Double precioCompra;
     @Column(name = "precio_venta")
     private Double precioVenta;
+    @Column(columnDefinition = "boolean default false")
+    private Boolean eliminado = false;
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties({"hibernateLazyInitializer"})
     @JoinColumn(name = "marca_id")
@@ -89,4 +91,11 @@ public class Producto {
         this.marca = marca;
     }
 
+    public Boolean getEliminado() {
+        return eliminado;
+    }
+
+    public void setEliminado(Boolean eliminado) {
+        this.eliminado = eliminado;
+    }
 }
