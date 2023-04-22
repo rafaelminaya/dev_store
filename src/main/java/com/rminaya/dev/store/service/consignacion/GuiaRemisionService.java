@@ -7,7 +7,7 @@ import java.util.List;
 public interface GuiaRemisionService {
     List<GuiaRemision> findAll();
     GuiaRemision findById(Long id);
-    GuiaRemision save(GuiaRemision guiaRemision);
+    Long save(GuiaRemision guiaRemision);
     void procesarKardex(Long guiaRemisionId);
     void desprocesarKardex(Long guiaRemisionId);
     void deleteById(Long id);

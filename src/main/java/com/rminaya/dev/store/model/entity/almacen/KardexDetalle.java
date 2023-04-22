@@ -32,6 +32,8 @@ public class KardexDetalle {
     @JoinColumn(name = "producto_id")
     @JsonIgnoreProperties({"hibernateLazyInitializer"})
     private Producto producto;
+    @Column(columnDefinition = "boolean default false")
+    private Boolean eliminado = false;
     /*
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "kardex_id")
@@ -137,6 +139,14 @@ public class KardexDetalle {
         this.saldoTotal = saldoTotal;
     }
 
+    public Boolean getEliminado() {
+        return eliminado;
+    }
+
+    public void setEliminado(Boolean eliminado) {
+        this.eliminado = eliminado;
+    }
+
     @Override
     public String toString() {
         return "KardexDetalle{" +
@@ -152,6 +162,7 @@ public class KardexDetalle {
                 ", saldoPrecio=" + saldoPrecio +
                 ", saldoTotal=" + saldoTotal +
                 ", producto=" + producto +
+                ", eliminado=" + eliminado +
                 '}';
     }
 }

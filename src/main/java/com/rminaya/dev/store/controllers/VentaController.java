@@ -20,29 +20,20 @@ public class VentaController {
     private BoletaVentaService boletaVentaService;
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public List<BoletaVenta> listar() {
-        return this.boletaVentaService.findAll();
+    public ResponseEntity<List<BoletaVenta>> listar() {
+        return ResponseEntity.ok(this.boletaVentaService.findAll());
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<?> obtener(@PathVariable Long id) {
-        BoletaVenta boletaVenta;
-        try {
-            boletaVenta = this.boletaVentaService.findById(id);
-        } catch (NoSuchElementException ex) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(boletaVenta);
+    public ResponseEntity<BoletaVenta> obtener(@PathVariable("id") Long boletaVentaId) {
+        BoletaVenta boletaVenta = this.boletaVentaService.findById(boletaVentaId);
+        return new ResponseEntity<>(boletaVenta, HttpStatus.OK);
     }
 
     @PostMapping
-    //@ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> crear(@RequestBody BoletaVenta boletaVenta) {
-        Map<String, Object> response = new HashMap<>();
-        response.put("mensaje", this.boletaVentaService.save(boletaVenta));
-//        return this.boletaVentaService.save(boletaVenta);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    public ResponseEntity<Long> crear(@RequestBody BoletaVenta boletaVenta) {
+        Long boletaVentaId = this.boletaVentaService.save(boletaVenta);
+        return new ResponseEntity<>(boletaVentaId, HttpStatus.CREATED);
     }
 
     @DeleteMapping(value = "/{id}")
@@ -52,7 +43,7 @@ public class VentaController {
     }
 
     @PostMapping(value = "/{id}/anular")
-    public ResponseEntity<?> anular(@PathVariable(value = "id") Long boletaVentaId){
+    public ResponseEntity<?> anular(@PathVariable(value = "id") Long boletaVentaId) {
         this.boletaVentaService.anular(boletaVentaId);
         return ResponseEntity.noContent().build();
     }

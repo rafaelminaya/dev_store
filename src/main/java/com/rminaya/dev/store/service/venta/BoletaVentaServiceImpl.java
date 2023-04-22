@@ -38,18 +38,23 @@ public class BoletaVentaServiceImpl implements BoletaVentaService {
     @Override
     @Transactional(readOnly = true)
     public List<BoletaVenta> findAll() {
-        return this.boletaVentaRepository.findAll();
+        return this.boletaVentaRepository.findAll()
+                .stream()
+                .filter(boletaVenta -> boletaVenta.getEliminado().equals(false))
+                .toList();
     }
 
     @Override
     @Transactional(readOnly = true)
     public BoletaVenta findById(Long id) {
-        return this.boletaVentaRepository.findById(id).orElseThrow();
+        return this.boletaVentaRepository.findById(id)
+                .filter(boletaVenta -> boletaVenta.getEliminado().equals(false))
+                .orElseThrow(() -> new DevStoreExceptions("No se encontró la venta.", HttpStatus.NOT_FOUND));
     }
 
     @Override
     @Transactional
-    public BoletaVenta save(BoletaVenta boletaVenta) {
+    public Long save(BoletaVenta boletaVenta) {
         // Crear boleta de venta y detalles
         boletaVenta.setFechaEmision(LocalDateTime.now());
         boletaVenta = this.boletaVentaRepository.save(boletaVenta);
@@ -133,7 +138,7 @@ public class BoletaVentaServiceImpl implements BoletaVentaService {
         // Creamos el kardex con sus detalles
         this.kardexRepository.save(kardex);
 
-        return boletaVenta;
+        return boletaVenta.getId();
     }
 
     @Override
@@ -153,7 +158,9 @@ public class BoletaVentaServiceImpl implements BoletaVentaService {
     public void anular(Long boletaVentaId) {
         // Obtenemos la boleta de benta y sus detalles
         BoletaVenta boletaVenta = this.boletaVentaRepository.findById(boletaVentaId)
+                .filter(boletaVenta1 -> boletaVenta1.getEliminado().equals(false))
                 .orElseThrow(() -> new DevStoreExceptions("No se encontró la boleta de venta.", HttpStatus.NOT_FOUND));
+        boletaVenta.setEliminado(true);
         // Iteramos los detalles de la boleta, para buscar los detalles de los kardex y actualizar sus saldos
         boletaVenta.getBoletaVentaDetalles().forEach(
                 detalle -> {
@@ -192,15 +199,24 @@ public class BoletaVentaServiceImpl implements BoletaVentaService {
                 }
         );
 
-        TipoOperacion tipoOperacion = this.tipoOperacionRepository.findById(Operacion.CONSIGNACION_RECIBIDA.getId())
+        TipoOperacion tipoOperacion = this.tipoOperacionRepository.findById(Operacion.VENTA.getId())
                 .orElseThrow(() -> new DevStoreExceptions("No se encontró la la operación.", HttpStatus.NOT_FOUND));
         // Buscamos el kardex y sus detalles para eliminarlos
         Kardex kardex = this.kardexRepository.kardexByIdAndTipoOperacion(boletaVentaId, tipoOperacion.getId())
+                .filter(kardex1 -> kardex1.getEliminado().equals(false))
                 .orElseThrow(() -> new DevStoreExceptions("No se encontró el kardex", HttpStatus.NOT_FOUND));
         // Elimnamos el kardex y sus detalles
-        this.kardexRepository.deleteById(kardex.getId());
+        kardex.setEliminado(true);
+        kardex.getKardexDetalles().forEach(kardexDetalle -> {
+            kardexDetalle.setEliminado(true);
+        });
+        // Guardamos los cambios del cambio de estado a eliminado
+        this.kardexRepository.save(kardex);
         // Elimnamos la venta y sus detalles
-        this.boletaVentaRepository.deleteById(boletaVenta.getId());
+        boletaVenta.getBoletaVentaDetalles().forEach(boletaVentaDetalle -> {
+            boletaVentaDetalle.setEliminado(true);
+        });
+        this.boletaVentaRepository.save(boletaVenta);
 
     }
 }

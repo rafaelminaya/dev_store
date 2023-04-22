@@ -20,6 +20,8 @@ public class BoletaVentaDetalle {
     private Double baseImponible;
     @Column(name = "importe_igv")
     private Double importeIgv;
+    @Column(columnDefinition = "boolean default false")
+    private Boolean eliminado = false;
     @ManyToOne
     @JoinColumn(name = "producto_id")
     private Producto producto;
@@ -87,4 +89,11 @@ public class BoletaVentaDetalle {
         this.producto = producto;
     }
 
+    public Boolean getEliminado() {
+        return eliminado;
+    }
+
+    public void setEliminado(Boolean eliminado) {
+        this.eliminado = eliminado;
+    }
 }

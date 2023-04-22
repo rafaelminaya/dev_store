@@ -31,6 +31,8 @@ public class Kardex {
     @JoinColumn(name = "kardex_id")
     @JsonIgnoreProperties({"hibernateLazyInitializer"})
     private List<KardexDetalle> kardexDetalles;
+    @Column(columnDefinition = "boolean default false")
+    private Boolean eliminado = false;
 
     // CONSTRUCTOR
     public Kardex() {
@@ -94,5 +96,26 @@ public class Kardex {
 
     public void setKardexDetalles(List<KardexDetalle> kardexDetalles) {
         this.kardexDetalles = kardexDetalles;
+    }
+
+    public Boolean getEliminado() {
+        return eliminado;
+    }
+
+    public void setEliminado(Boolean eliminado) {
+        this.eliminado = eliminado;
+    }
+
+    @Override
+    public String toString() {
+        return "Kardex{" +
+                "id=" + id +
+                ", numero='" + numero + '\'' +
+                ", comprobanteId=" + comprobanteId +
+                ", fechaEmision=" + fechaEmision +
+                ", tipoOperacion=" + tipoOperacion +
+                ", kardexDetalles=" + kardexDetalles +
+                ", eliminado=" + eliminado +
+                '}';
     }
 }

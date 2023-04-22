@@ -31,8 +31,8 @@ INSERT INTO productos (codigo, nombre, talla, color, precio_compra, precio_venta
 INSERT INTO productos (codigo, nombre, talla, color, precio_compra, precio_venta, marca_id) VALUES ('CA-G','Gorra hombre', 'M','BLANCO', 100.0, 170.0, 3);
 INSERT INTO productos (codigo, nombre, talla, color, precio_compra, precio_venta, marca_id) VALUES ('CA-C','Correa marron hombre','L','MARRON', 110.0, 180.0, 3);
 -- GUIA REMISION
-INSERT INTO guia_remision (numero, fecha_emision, porcentaje_comision, proveedor_id, procesado, eliminado) VALUES ('100', DATE_SUB(now(), INTERVAL 2 DAY), 40, 1, 0, 0);
-INSERT INTO guia_remision (numero, fecha_emision, porcentaje_comision, proveedor_id, procesado, eliminado) VALUES ('101', DATE_SUB(now(), INTERVAL 2 DAY), 25, 2, 0, 0);
+INSERT INTO guia_remision (numero, fecha_emision, porcentaje_comision, proveedor_id, procesado, eliminado) VALUES ('100', DATE_SUB(now(), INTERVAL 2 DAY), 40, 1, 1, 0);
+INSERT INTO guia_remision (numero, fecha_emision, porcentaje_comision, proveedor_id, procesado, eliminado) VALUES ('101', DATE_SUB(now(), INTERVAL 2 DAY), 25, 2, 1, 0);
 -- GUIA REMISION DETALLE
 INSERT INTO guia_emision_detalle (cantidad, precio_venta, producto_id, guia_remision_id, eliminado) VALUES (12, 75.0, 1, 1, 0);
 INSERT INTO guia_emision_detalle (cantidad, precio_venta, producto_id, guia_remision_id, eliminado) VALUES (10, 60.5, 2, 1, 0);

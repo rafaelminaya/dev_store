@@ -17,9 +17,8 @@ public class ProveedorController {
     private ProveedorService proveedorService;
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public List<Proveedor> listar() {
-        return this.proveedorService.findAll();
+    public ResponseEntity<List<Proveedor>> listar() {
+        return ResponseEntity.ok(this.proveedorService.findAll());
     }
 
 

@@ -6,6 +6,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "productos")
+@JsonIgnoreProperties({ "handler","hibernateLazyInitializer","FieldHandler"})
 public class Producto {
     //ATRIBUTOS
     @Id
@@ -22,7 +23,7 @@ public class Producto {
     @Column(columnDefinition = "boolean default false")
     private Boolean eliminado = false;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties({"hibernateLazyInitializer"})
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @JoinColumn(name = "marca_id")
     private Marca marca;
 

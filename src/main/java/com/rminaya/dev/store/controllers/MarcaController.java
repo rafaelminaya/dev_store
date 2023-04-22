@@ -17,9 +17,8 @@ public class MarcaController {
     private MarcaService marcaService;
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public List<Marca> listar() {
-        return this.marcaService.findAll();
+    public ResponseEntity<List<Marca>> listar() {
+        return ResponseEntity.ok(this.marcaService.findAll());
     }
 
     @GetMapping(value = "/{id}")

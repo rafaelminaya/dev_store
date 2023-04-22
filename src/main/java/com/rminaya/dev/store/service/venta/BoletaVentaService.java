@@ -8,7 +8,7 @@ import java.util.List;
 public interface BoletaVentaService {
     List<BoletaVenta> findAll();
     BoletaVenta findById(Long id);
-    BoletaVenta save(BoletaVenta boletaVenta);
+    Long save(BoletaVenta boletaVenta);
     void deleteById(Long id);
     // kardex
     Kardex saveKardex(Kardex kardex);

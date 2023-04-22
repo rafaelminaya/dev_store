@@ -17,12 +17,12 @@ public class GuiaRemisionDetalle {
     private Double precioVenta;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "producto_id")
-    @JsonIgnoreProperties({"hibernateLazyInitializer"})
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Producto producto;
 
     @ManyToOne(fetch = FetchType.LAZY)
     //@JoinColumn(name = "guia_remision_id")
-    @JsonIgnoreProperties({"guiaRemisionDetalles","hibernateLazyInitializer"})
+    @JsonIgnoreProperties({"guiaRemisionDetalles","hibernateLazyInitializer", "handler"})
     @JsonIgnore
     private GuiaRemision guiaRemision;
     @Column(name = "eliminado", columnDefinition = "boolean default false")

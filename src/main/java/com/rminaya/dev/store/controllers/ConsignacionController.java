@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @CrossOrigin(origins = {"http://localhost:4200"})
 @RestController
@@ -18,27 +17,21 @@ public class ConsignacionController {
     private GuiaRemisionService guiaRemisionService;
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public List<GuiaRemision> listar() {
-        return this.guiaRemisionService.findAll();
+    public ResponseEntity<List<GuiaRemision>> listar() {
+        return ResponseEntity.ok(this.guiaRemisionService.findAll());
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<?> obtener(@PathVariable Long id) {
-        GuiaRemision guiaRemision;
-        try {
-            guiaRemision = this.guiaRemisionService.findById(id);
-        } catch (NoSuchElementException ex) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(guiaRemision);
+    public ResponseEntity<?> obtener(@PathVariable("id") Long guiaRemisionId) {
+        GuiaRemision guiaRemision = this.guiaRemisionService.findById(guiaRemisionId);
+        return  new ResponseEntity<>(guiaRemision, HttpStatus.OK);
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public GuiaRemision guardar(@RequestBody GuiaRemision guiaRemision) {
+    public ResponseEntity<Long> guardar(@RequestBody GuiaRemision guiaRemision) {
         System.out.println("GUIA: " + guiaRemision);
-        return this.guiaRemisionService.save(guiaRemision);
+        Long guiaRemisionId = this.guiaRemisionService.save(guiaRemision);
+        return new ResponseEntity<>(guiaRemisionId, HttpStatus.CREATED);
     }
 
     @PostMapping(value = "/{id}/procesar-kardex")
@@ -53,7 +46,7 @@ public class ConsignacionController {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping(value = "/{id}")
+    @PutMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminar(@PathVariable Long id) {
         this.guiaRemisionService.deleteById(id);

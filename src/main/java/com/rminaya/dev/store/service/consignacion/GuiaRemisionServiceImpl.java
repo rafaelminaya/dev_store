@@ -37,24 +37,29 @@ public class GuiaRemisionServiceImpl implements GuiaRemisionService {
     @Override
     @Transactional(readOnly = true)
     public List<GuiaRemision> findAll() {
-        return this.guiaRemisionRepository.findAll();
+        return this.guiaRemisionRepository.findAll()
+                .stream()
+                .filter(guiaRemision -> guiaRemision.getEliminado().equals(false))
+                .toList();
     }
 
     @Override
     @Transactional(readOnly = true)
     public GuiaRemision findById(Long id) {
-        return this.guiaRemisionRepository.findById(id).orElseThrow();
+        return this.guiaRemisionRepository.findById(id)
+                .filter(guiaRemision -> guiaRemision.getEliminado().equals(false))
+                .orElseThrow(() -> new DevStoreExceptions("No se encontró la guía de remisión.", HttpStatus.NOT_FOUND));
     }
 
     @Override
     @Transactional
-    public GuiaRemision save(GuiaRemision guiaRemision) {
+    public Long save(GuiaRemision guiaRemision) {
         System.out.println("SERVICE: " + guiaRemision);
 
         guiaRemision.getGuiaRemisionDetalles()
                 .forEach(guiaRemisionDetalle -> guiaRemisionDetalle.setGuiaRemision(guiaRemision));
 
-        return this.guiaRemisionRepository.save(guiaRemision);
+        return this.guiaRemisionRepository.save(guiaRemision).getId();
     }
 
     @Override
@@ -76,7 +81,7 @@ public class GuiaRemisionServiceImpl implements GuiaRemisionService {
                 .orElseThrow(() -> new DevStoreExceptions("No se encontró la la operación.", HttpStatus.NOT_FOUND));
         kardex.setTipoOperacion(tipoOperacion);
 
-        // Creamos el kardex
+        // Creamos el kardex para luego añadir sus detalles y volver a guardarlo
         //TODO - verificar si esto es necesario, ya que se guarda al final, lo mismo para ventas.
         this.kardexRepository.save(kardex);
 
@@ -117,10 +122,12 @@ public class GuiaRemisionServiceImpl implements GuiaRemisionService {
                     // Añadimos el detalle al kardex
                     kardex.addDetalle(kardexDetalle);
 
+                    // TODO - Esto tal vez funcione mal, ya que los native query tienen problema al parsear a objetos al devolver un "*" en el select
                     // Obtengo los diferentes "kardex detalles" a actualizar según el nuevo moviemiento
                     List<KardexDetalle> kardexDetallesByProducto = this.kardexDetalleRepository.detallesByProductoAndFechaEmision(
                             detalle.getProducto().getId(),
                             guiaRemisionBuscada.getFechaEmision());
+                    System.out.println("kardexDetallesByProducto: " + kardexDetallesByProducto);
 
                     // Re asignamos el último saldo cantidad
                     Integer nuevoUltimoSaldoCantidad = kardexDetalle.getSaldoCantidad();
@@ -129,6 +136,7 @@ public class GuiaRemisionServiceImpl implements GuiaRemisionService {
                     for (KardexDetalle detalleByProducto : kardexDetallesByProducto) {
 
                         KardexDetalle kardexDetalleUpdate = this.kardexDetalleRepository.findById(detalleByProducto.getId())
+                                .filter(detalleEncontrado -> detalleEncontrado.getEliminado().equals(false))
                                 .orElseThrow(() -> new DevStoreExceptions("No hay kardex detalle que actualizar.", HttpStatus.NOT_FOUND));
 
                         kardexDetalleUpdate.setSaldoCantidad(nuevoUltimoSaldoCantidad + detalleByProducto.getEntradaCantidad() - detalleByProducto.getSalidaCantidad());
@@ -183,6 +191,7 @@ public class GuiaRemisionServiceImpl implements GuiaRemisionService {
                     for (KardexDetalle detalleByProducto : kardexDetallesByProducto) {
 
                         KardexDetalle kardexDetalleUpdate = this.kardexDetalleRepository.findById(detalleByProducto.getId())
+                                .filter(kardexDetalle -> kardexDetalle.getEliminado().equals(false))
                                 .orElseThrow(() -> new DevStoreExceptions("No hay kardex detalle que actualizar.", HttpStatus.NOT_FOUND));
 
                         kardexDetalleUpdate.setSaldoCantidad(ultimoSaldoCantidad + detalleByProducto.getEntradaCantidad() - detalleByProducto.getSalidaCantidad());
@@ -202,17 +211,29 @@ public class GuiaRemisionServiceImpl implements GuiaRemisionService {
                 .orElseThrow(() -> new DevStoreExceptions("No se encontró la la operación.", HttpStatus.NOT_FOUND));
         // Buscamos el kardex y sus detalles para eliminarlos
         Kardex kardex = this.kardexRepository.kardexByIdAndTipoOperacion(guiaRemisionId, tipoOperacion.getId())
+                .filter(kardex1 -> kardex1.getEliminado().equals(false))
                 .orElseThrow(() -> new DevStoreExceptions("No se encontró el kardex", HttpStatus.NOT_FOUND));
         // Eliminamos el kardex y sus detalles
-        this.kardexRepository.deleteById(kardex.getId());
-        // Eliminamos la guía y sus detalles
-        this.guiaRemisionRepository.deleteById(guiaRemisionId);
-
+        kardex.setEliminado(true);
+        kardex.getKardexDetalles().forEach(kardexDetalle -> {
+            kardexDetalle.setEliminado(true);
+        });
+        // Guardamos los cambios del cambio de estado a eliminado
+        this.kardexRepository.save(kardex);
     }
 
     @Override
     @Transactional
     public void deleteById(Long id) {
-        this.guiaRemisionRepository.deleteById(id);
+
+        GuiaRemision guiaRemision = this.guiaRemisionRepository.findByIdAndNoProcesado(id)
+                .orElseThrow(() -> new DevStoreExceptions("No se encontró la guía o ya ha sido procesada.", HttpStatus.NOT_FOUND));
+
+        guiaRemision.setEliminado(true);
+        // Buscamos y eliminamos los detalles
+        guiaRemision.getGuiaRemisionDetalles().forEach(guiaRemisionDetalle -> {
+            guiaRemisionDetalle.setEliminado(true);
+        });
+        this.guiaRemisionRepository.save(guiaRemision);
     }
 }
