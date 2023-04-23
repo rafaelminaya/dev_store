@@ -2,31 +2,34 @@ package com.rminaya.dev.store.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import java.time.LocalDateTime;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 public class VentasInDto {
     // ATRIBUTOS
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime fechaInicio;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime fechaFin;
+    @NotNull(message = "no debe ser vacío.")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate fechaInicio;
+    @NotNull(message = "no debe ser vacío.")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate fechaFin;
 
     public VentasInDto() {
     }
 
     // GETTERS AND SETTERS
-    public LocalDateTime getFechaInicio() {
+    public LocalDate getFechaInicio() {
         return fechaInicio;
     }
 
-    public void setFechaInicio(LocalDateTime fechaInicio) {
+    public void setFechaInicio(LocalDate fechaInicio) {
         this.fechaInicio = fechaInicio;
     }
 
-    public LocalDateTime getFechaFin() {
+    public LocalDate getFechaFin() {
         return fechaFin;
     }
 
-    public void setFechaFin(LocalDateTime fechaFin) {
+    public void setFechaFin(LocalDate fechaFin) {
         this.fechaFin = fechaFin;
     }
 }

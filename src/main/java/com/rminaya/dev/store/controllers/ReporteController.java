@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @CrossOrigin(origins = {"http://localhost:4200"})
@@ -16,18 +17,17 @@ public class ReporteController {
     private ReporteService reporteService;
 
     @GetMapping(value = "/ventas")
-    public ResponseEntity<List<IReporteVentasDto>> registroVentas(@RequestBody VentasInDto ventasInDto) {
-        return ResponseEntity.ok(this.reporteService.registroVentas(ventasInDto));
+    public ResponseEntity<List<IReporteVentasDto>> registroVentas(@Valid @RequestBody VentasInDto ventasInDto) {
+        return ResponseEntity.ok(reporteService.registroVentas(ventasInDto));
     }
 
     @GetMapping(value = "/kardex-producto")
-    public ResponseEntity<List<IReporteKardexPorProductoDto>> kardexPorProducto(@RequestBody KardexProductoDto kardexProductoDto) {
-        return ResponseEntity.ok(this.reporteService.kardexPorProducto(kardexProductoDto));
+    public ResponseEntity<List<IReporteKardexPorProductoDto>> kardexPorProducto(@Valid @RequestBody KardexProductoDto kardexProductoDto) {
+        return ResponseEntity.ok(reporteService.kardexPorProducto(kardexProductoDto));
     }
 
     @GetMapping(value = "/liquidacion-proveedores")
-    public ResponseEntity<List<IReporteLiquidacionDto>> liquidacionProveedores(@RequestBody LiquidacionDto liquidacionDto) {
-        List<IReporteLiquidacionDto> productos = this.reporteService.liquidacionProveedores(liquidacionDto);
-        return ResponseEntity.ok(productos);
+    public ResponseEntity<List<IReporteLiquidacionDto>> liquidacionProveedores(@Valid @RequestBody LiquidacionDto liquidacionDto) {
+        return ResponseEntity.ok(reporteService.liquidacionProveedores(liquidacionDto));
     }
 }

@@ -8,5 +8,6 @@ public interface MarcaService {
     List<Marca> findAll();
     Marca findById(Long id);
     Long save(Marca marca);
+    Long update(Marca marca, Long id);
     void deleteById(Long id);
 }

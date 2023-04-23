@@ -1,14 +1,14 @@
 package com.rminaya.dev.store.service.reportes;
 
 import com.rminaya.dev.store.model.dto.*;
-import com.rminaya.dev.store.model.entity.almacen.Kardex;
 import com.rminaya.dev.store.model.entity.consignacion.GuiaRemision;
 import com.rminaya.dev.store.repository.BoletaVentaRepository;
 import com.rminaya.dev.store.repository.GuiaRemisionRepository;
-import com.rminaya.dev.store.repository.KardexDetalleRepository;
 import com.rminaya.dev.store.repository.KardexRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -17,7 +17,9 @@ public class ReporteServiceImpl implements ReporteService {
     private final GuiaRemisionRepository guiaRemisionRepository;
     private final KardexRepository kardexRepository;
 
-    public ReporteServiceImpl(BoletaVentaRepository boletaVentaRepository, GuiaRemisionRepository guiaRemisionRepository, KardexRepository kardexRepository) {
+    public ReporteServiceImpl(BoletaVentaRepository boletaVentaRepository,
+                              GuiaRemisionRepository guiaRemisionRepository,
+                              KardexRepository kardexRepository) {
         this.boletaVentaRepository = boletaVentaRepository;
         this.guiaRemisionRepository = guiaRemisionRepository;
         this.kardexRepository = kardexRepository;
@@ -25,13 +27,14 @@ public class ReporteServiceImpl implements ReporteService {
 
     @Override
     public List<IReporteVentasDto> registroVentas(VentasInDto ventasInDto) {
-        return this.boletaVentaRepository.reporteVenta(ventasInDto.getFechaInicio(), ventasInDto.getFechaFin());
+        LocalDateTime fechaInicio = LocalDateTime.of(ventasInDto.getFechaInicio(), LocalTime.MIN);
+        LocalDateTime fechaFin = LocalDateTime.of(ventasInDto.getFechaFin(), LocalTime.MAX);
+        return this.boletaVentaRepository.reporteVenta(fechaInicio, fechaFin);
     }
 
     @Override
     public List<IReporteKardexPorProductoDto> kardexPorProducto(KardexProductoDto kardexProductoDto) {
-        List<IReporteKardexPorProductoDto> kardexByProducto = this.kardexRepository.findByProductoId(kardexProductoDto.getProductoId());
-        return kardexByProducto;
+        return this.kardexRepository.findByProductoId(kardexProductoDto.getProductoId());
     }
 
     @Override
@@ -50,7 +53,9 @@ public class ReporteServiceImpl implements ReporteService {
                 liquidacionDto.getFechaInicio(), liquidacionDto.getFechaFin());
         */
         // Obtengo los productos vendidos del proveedor en el rango de fechas recibido
+        LocalDateTime fechaInicio = LocalDateTime.of(liquidacionDto.getFechaInicio(), LocalTime.MIN);
+        LocalDateTime fechaFin = LocalDateTime.of(liquidacionDto.getFechaFin(), LocalTime.MAX);
         return this.boletaVentaRepository.findByProductosAgrupados(productosByProveedor,
-                liquidacionDto.getFechaInicio(), liquidacionDto.getFechaFin());
+                fechaInicio, fechaFin);
     }
 }

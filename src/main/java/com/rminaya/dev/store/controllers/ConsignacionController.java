@@ -7,7 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin(origins = {"http://localhost:4200"})
 @RestController
@@ -17,30 +20,30 @@ public class ConsignacionController {
     private GuiaRemisionService guiaRemisionService;
 
     @GetMapping
-    public ResponseEntity<List<GuiaRemision>> listar() {
+    public ResponseEntity<List<GuiaRemision>> index() {
         return ResponseEntity.ok(this.guiaRemisionService.findAll());
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<?> obtener(@PathVariable("id") Long guiaRemisionId) {
+    public ResponseEntity<?> show(@PathVariable("id") Long guiaRemisionId) {
         GuiaRemision guiaRemision = this.guiaRemisionService.findById(guiaRemisionId);
         return  new ResponseEntity<>(guiaRemision, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<Long> guardar(@RequestBody GuiaRemision guiaRemision) {
-        System.out.println("GUIA: " + guiaRemision);
-        Long guiaRemisionId = this.guiaRemisionService.save(guiaRemision);
-        return new ResponseEntity<>(guiaRemisionId, HttpStatus.CREATED);
+    public ResponseEntity<?> store(@Valid @RequestBody GuiaRemision guiaRemision) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", this.guiaRemisionService.save(guiaRemision));
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @PostMapping(value = "/{id}/procesar-kardex")
+    @PutMapping(value = "/{id}/procesar-kardex")
     public ResponseEntity<?> procesarKardex(@PathVariable(value = "id") Long guiaRemisionId) {
         this.guiaRemisionService.procesarKardex(guiaRemisionId);
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping(value = "/{id}/desprocesar-kardex")
+    @PutMapping(value = "/{id}/desprocesar-kardex")
     public ResponseEntity<?> desprocesarKardex(@PathVariable(value = "id") Long guiaRemisionId) {
         this.guiaRemisionService.desprocesarKardex(guiaRemisionId);
         return ResponseEntity.noContent().build();
@@ -48,7 +51,7 @@ public class ConsignacionController {
 
     @PutMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminar(@PathVariable Long id) {
+    public void delete(@PathVariable Long id) {
         this.guiaRemisionService.deleteById(id);
     }
 

@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +19,8 @@ public class BoletaVenta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotEmpty(message = "no debe ser vacío.")
+    @Size(min = 3, max = 6, message = "debe tener entre 3 y 6 caracteres.")
     private String numero;
     @Column(name = "fecha_emision", columnDefinition = "DATETIME")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")

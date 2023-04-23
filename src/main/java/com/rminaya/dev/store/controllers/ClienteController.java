@@ -7,7 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin(origins = {"http://localhost:4200"})
 @RestController
@@ -28,9 +31,10 @@ public class ClienteController {
     }
 
     @PostMapping
-    public ResponseEntity<Long> guardar(@RequestBody Cliente cliente) {
-        Long clienteId = this.clienteService.save(cliente);
-        return new ResponseEntity<>(clienteId, HttpStatus.CREATED);
+    public ResponseEntity<?> guardar(@Valid @RequestBody Cliente cliente) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", this.clienteService.save(cliente));
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/{id}")

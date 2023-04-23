@@ -2,17 +2,24 @@ package com.rminaya.dev.store.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import java.time.LocalDateTime;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 
 public class LiquidacionDto {
     // ATRIBUTOS
+    @NotNull(message = "no debe ser vacío.")
+    @Min(value = 1, message = "debe ser un ID mayor a 1.")
     private Long proveedorId;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime fechaInicio;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime fechaFin;
+    @NotNull(message = "no debe ser vacío.")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate fechaInicio;
+    @NotNull(message = "no debe ser vacío.")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate fechaFin;
 
     // GETTERS AND SETTERS
+
     public Long getProveedorId() {
         return proveedorId;
     }
@@ -21,19 +28,19 @@ public class LiquidacionDto {
         this.proveedorId = proveedorId;
     }
 
-    public LocalDateTime getFechaInicio() {
+    public LocalDate getFechaInicio() {
         return fechaInicio;
     }
 
-    public void setFechaInicio(LocalDateTime fechaInicio) {
+    public void setFechaInicio(LocalDate fechaInicio) {
         this.fechaInicio = fechaInicio;
     }
 
-    public LocalDateTime getFechaFin() {
+    public LocalDate getFechaFin() {
         return fechaFin;
     }
 
-    public void setFechaFin(LocalDateTime fechaFin) {
+    public void setFechaFin(LocalDate fechaFin) {
         this.fechaFin = fechaFin;
     }
 }

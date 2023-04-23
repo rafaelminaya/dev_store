@@ -7,7 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin(origins = {"http://localhost:4200"})
 @RestController
@@ -17,26 +20,26 @@ public class ProveedorController {
     private ProveedorService proveedorService;
 
     @GetMapping
-    public ResponseEntity<List<Proveedor>> listar() {
+    public ResponseEntity<List<Proveedor>> index() {
         return ResponseEntity.ok(this.proveedorService.findAll());
     }
 
-
     @GetMapping(value = "/{id}")
-    public ResponseEntity<?> obtener(@PathVariable("id") Long proveedorId) {
+    public ResponseEntity<?> show(@PathVariable("id") Long proveedorId) {
         Proveedor proveedor = this.proveedorService.findById(proveedorId);
         return new ResponseEntity<>(proveedor, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<Long> guardar(@RequestBody Proveedor proveedor) {
-        Long proveedorId = this.proveedorService.save(proveedor);
-        return new ResponseEntity<>(proveedorId, HttpStatus.CREATED);
+    public ResponseEntity<?> store(@Valid @RequestBody Proveedor proveedor) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", this.proveedorService.save(proveedor));
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminar(@PathVariable Long id) {
+    public void delete(@PathVariable Long id) {
         this.proveedorService.deleteById(id);
     }
 

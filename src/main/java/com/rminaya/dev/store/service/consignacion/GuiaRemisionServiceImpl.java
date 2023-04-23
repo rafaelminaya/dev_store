@@ -54,7 +54,6 @@ public class GuiaRemisionServiceImpl implements GuiaRemisionService {
     @Override
     @Transactional
     public Long save(GuiaRemision guiaRemision) {
-        System.out.println("SERVICE: " + guiaRemision);
 
         guiaRemision.getGuiaRemisionDetalles()
                 .forEach(guiaRemisionDetalle -> guiaRemisionDetalle.setGuiaRemision(guiaRemision));

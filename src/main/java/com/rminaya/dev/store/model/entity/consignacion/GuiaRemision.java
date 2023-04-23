@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,13 +17,19 @@ public class GuiaRemision {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotEmpty(message = "no puede estar vacio.")
+    @Size(min = 3, max = 6, message = "debe tener entre 3 y 6 caracteres.")
     private String numero;
+    @NotNull(message = "no puede estar vacio.")
     @Column(name = "fecha_emision", columnDefinition = "DATETIME")
     //@Temporal(TemporalType.DATE)
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     //@JsonFormat(pattern = "yyyy-MM-ddTHH:mm:ss", shape = JsonFormat.Shape.STRING)
     private LocalDateTime fechaEmision;
+    @NotNull(message = "no puede estar vacio.")
+    @Min(value = 0, message = "no debe ser menor que 0.")
+    @Max(value = 100, message = "no debe ser mayor que 100.")
     private Double porcentajeComision;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "proveedor_id")
@@ -128,19 +135,5 @@ public class GuiaRemision {
 
     public void setEliminado(Boolean eliminado) {
         this.eliminado = eliminado;
-    }
-
-    @Override
-    public String toString() {
-        return "GuiaRemision{" +
-                "id=" + id +
-                ", numero='" + numero + '\'' +
-                ", fechaEmision=" + fechaEmision +
-                ", porcentajeComision=" + porcentajeComision +
-                ", proveedor=" + proveedor +
-                ", guiaRemisionDetalles=" + guiaRemisionDetalles +
-                ", procesado=" + procesado +
-                ", eliminado=" + eliminado +
-                '}';
     }
 }

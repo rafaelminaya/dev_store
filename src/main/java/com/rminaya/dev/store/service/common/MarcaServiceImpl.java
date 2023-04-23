@@ -39,7 +39,18 @@ public class MarcaServiceImpl implements MarcaService {
     @Override
     @Transactional
     public Long save(Marca marca) {
+        if (marca.getId() != null && marca.getId() > 0) {
+            marca.setId(0L);
+        }
         return this.marcaRepository.save(marca).getId();
+    }
+
+    @Override
+    @Transactional
+    public Long update(Marca marca, Long marcaId) {
+        Marca marcaBuscada = this.findById(marcaId);
+        marcaBuscada.setNombre(marca.getNombre());
+        return this.marcaRepository.save(marcaBuscada).getId();
     }
 
     @Override

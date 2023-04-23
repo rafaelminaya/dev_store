@@ -95,15 +95,4 @@ public class GuiaRemisionDetalle {
         this.eliminado = eliminado;
     }
 
-    @Override
-    public String toString() {
-        return "GuiaRemisionDetalle{" +
-                "id=" + id +
-                ", cantidad=" + cantidad +
-                ", precioVenta=" + precioVenta +
-                ", producto=" + producto +
-                ", guiaRemision=" + guiaRemision +
-                ", eliminado=" + eliminado +
-                '}';
-    }
 }
