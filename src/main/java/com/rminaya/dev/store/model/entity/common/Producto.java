@@ -23,16 +23,17 @@ public class Producto {
     @Size(min = 3, max = 255, message = "debe tener entre 3 y 255 caracteres.")
     @Column(nullable = false)
     private String nombre;
+    @NotNull
     private String talla;
+    @NotNull
     private String color;
-    @NotNull(message = "no puede estar vacio")
-    @Column(name = "precio_compra")
+    @NotNull(message = "no puede estar vacio.")
     private Double precioCompra;
-    @NotNull(message = "no puede estar vacio")
-    @Column(name = "precio_venta")
+    @NotNull(message = "no puede estar vacio.")
     private Double precioVenta;
     @Column(columnDefinition = "boolean default false")
     private Boolean eliminado = false;
+    @NotNull(message = "no puede estar vacio.")
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @JoinColumn(name = "marca_id")

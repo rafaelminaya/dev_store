@@ -37,7 +37,20 @@ public class ClienteServiceImpl implements ClienteService {
     @Override
     @Transactional
     public Long save(Cliente cliente) {
+        if (cliente.getId() != null && cliente.getId() > 0) {
+            cliente.setId(0L);
+        }
         return this.clienteRespository.save(cliente).getId();
+    }
+
+    @Override
+    public Long update(Cliente cliente, Long id) {
+        Cliente clienteBuscado = this.findById(id);
+        clienteBuscado.setDni(cliente.getDni());
+        clienteBuscado.setNombre(cliente.getNombre());
+        clienteBuscado.setDireccion(cliente.getDireccion());
+        clienteBuscado.setTelefono(cliente.getTelefono());
+        return this.clienteRespository.save(clienteBuscado).getId();
     }
 
     @Override

@@ -99,12 +99,12 @@ public class BoletaVentaServiceImpl implements BoletaVentaService {
                     kardexDetalle.setEntradaTotal(0d);
 
                     kardexDetalle.setSalidaCantidad(detalle.getCantidad());
-                    kardexDetalle.setSalidaPrecio(detalle.getTotal() / detalle.getCantidad());
-                    kardexDetalle.setSalidaTotal(detalle.getTotal());
+                    kardexDetalle.setSalidaPrecio(detalle.getTotalDetalle() / detalle.getCantidad());
+                    kardexDetalle.setSalidaTotal(detalle.getTotalDetalle());
 
                     kardexDetalle.setSaldoCantidad(ultimoSaldoCantidad - detalle.getCantidad());
-                    kardexDetalle.setSaldoPrecio(detalle.getTotal() / detalle.getCantidad());
-                    kardexDetalle.setSaldoTotal((detalle.getTotal() / detalle.getCantidad()) * (ultimoSaldoCantidad + detalle.getCantidad()));
+                    kardexDetalle.setSaldoPrecio(detalle.getTotalDetalle() / detalle.getCantidad());
+                    kardexDetalle.setSaldoTotal((detalle.getTotalDetalle() / detalle.getCantidad()) * (ultimoSaldoCantidad + detalle.getCantidad()));
                     // Añadimos el detalle al kardex
                     kardex.addDetalle(kardexDetalle);
 

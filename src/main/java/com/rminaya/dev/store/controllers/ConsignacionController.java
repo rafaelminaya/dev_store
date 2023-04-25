@@ -37,6 +37,13 @@ public class ConsignacionController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<?> update(@Valid @RequestBody GuiaRemision guiaRemision, @PathVariable("id") Long guiaRemisionId) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", this.guiaRemisionService.update(guiaRemision, guiaRemisionId));
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
     @PutMapping(value = "/{id}/procesar-kardex")
     public ResponseEntity<?> procesarKardex(@PathVariable(value = "id") Long guiaRemisionId) {
         this.guiaRemisionService.procesarKardex(guiaRemisionId);
@@ -49,7 +56,7 @@ public class ConsignacionController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping(value = "/{id}")
+    @PatchMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
         this.guiaRemisionService.deleteById(id);

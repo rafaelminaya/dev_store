@@ -1,6 +1,7 @@
 package com.rminaya.dev.store.service.consignacion;
 
 import com.rminaya.dev.store.exceptions.DevStoreExceptions;
+import com.rminaya.dev.store.model.entity.common.Marca;
 import com.rminaya.dev.store.model.entity.consignacion.Proveedor;
 import com.rminaya.dev.store.repository.ProveedorRepository;
 import org.springframework.http.HttpStatus;
@@ -39,7 +40,21 @@ public class ProveedorServiceImpl implements ProveedorService {
     @Override
     @Transactional
     public Long save(Proveedor proveedor) {
+        if (proveedor.getId() != null && proveedor.getId() > 0) {
+            proveedor.setId(0L);
+        }
         return this.proveedorRepository.save(proveedor).getId();
+    }
+
+    @Override
+    @Transactional
+    public Long update(Proveedor proveedor, Long id) {
+        Proveedor proveedorBuscado = this.findById(id);
+        proveedorBuscado.setRuc(proveedor.getRuc());
+        proveedorBuscado.setRazonComercial(proveedor.getRazonComercial());
+        proveedorBuscado.setDireccion(proveedor.getDireccion());
+        proveedorBuscado.setTelefono(proveedor.getTelefono());
+        return this.proveedorRepository.save(proveedorBuscado).getId();
     }
 
     @Override

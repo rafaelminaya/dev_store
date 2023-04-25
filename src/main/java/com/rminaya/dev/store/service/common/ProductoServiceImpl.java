@@ -39,7 +39,23 @@ public class ProductoServiceImpl implements ProductoService {
     @Override
     @Transactional
     public Long save(Producto producto) {
+        if (producto.getId() != null && producto.getId() > 0) {
+            producto.setId(0L);
+        }
         return this.productoRepository.save(producto).getId();
+    }
+
+    @Override
+    public Long update(Producto producto, Long id) {
+        Producto productoBuscado = this.findById(id);
+        productoBuscado.setCodigo(producto.getCodigo());
+        productoBuscado.setNombre(producto.getNombre());
+        productoBuscado.setTalla(producto.getTalla());
+        productoBuscado.setColor(producto.getColor());
+        productoBuscado.setPrecioCompra(producto.getPrecioCompra());
+        productoBuscado.setPrecioVenta(producto.getPrecioVenta());
+        productoBuscado.setMarca(producto.getMarca());
+        return this.productoRepository.save(productoBuscado).getId();
     }
 
     @Override

@@ -31,11 +31,13 @@ public class GuiaRemision {
     @Min(value = 0, message = "no debe ser menor que 0.")
     @Max(value = 100, message = "no debe ser mayor que 100.")
     private Double porcentajeComision;
+    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "proveedor_id")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Proveedor proveedor;
-    @OneToMany(mappedBy = "guiaRemision",fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @NotNull
+    @OneToMany(mappedBy = "guiaRemision",fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     //@JoinColumn(name = "guia_remision_id")
     @JsonIgnoreProperties(value = {"guiaremision", "hibernateLazyInitializer", "handler"}, allowSetters = true)
     private List<GuiaRemisionDetalle> guiaRemisionDetalles;
@@ -135,5 +137,19 @@ public class GuiaRemision {
 
     public void setEliminado(Boolean eliminado) {
         this.eliminado = eliminado;
+    }
+
+    @Override
+    public String toString() {
+        return "GuiaRemision{" +
+                "id=" + id +
+                ", numero='" + numero + '\'' +
+                ", fechaEmision=" + fechaEmision +
+                ", porcentajeComision=" + porcentajeComision +
+                ", proveedor=" + proveedor +
+                ", guiaRemisionDetalles=" + guiaRemisionDetalles +
+                ", procesado=" + procesado +
+                ", eliminado=" + eliminado +
+                '}';
     }
 }

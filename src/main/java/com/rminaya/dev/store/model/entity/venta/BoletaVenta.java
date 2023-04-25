@@ -6,7 +6,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -26,10 +25,6 @@ public class BoletaVenta {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime fechaEmision;
-    @Column(name = "base_imponible")
-    private Double baseImponible;
-    @Column(name = "importe_igv")
-    private Double importeIgv;
     @Column(columnDefinition = "boolean default false")
     private Boolean eliminado = false;
     @ManyToOne
@@ -46,9 +41,22 @@ public class BoletaVenta {
     }
 
     // MÉTODOS
-    public Double getTotal() {
+    public Double getBaseImponible() {
+        return this.boletaVentaDetalles
+                .stream()
+                .mapToDouble(value -> value.getBaseImponible())
+                .sum();
+    }
 
-        /*
+    public Double getImporteIgv() {
+        return this.boletaVentaDetalles
+                .stream()
+                .mapToDouble(value -> value.getImporteIgv())
+                .sum();
+    }
+
+    public Double getTotal() {
+         /*
         Double total = 0.0;
         for (BoletaVentaDetalle detalle : this.boletaVentaDetalles) {
             total += detalle.getTotal();
@@ -57,7 +65,7 @@ public class BoletaVenta {
         */
         return this.boletaVentaDetalles
                 .stream()
-                .mapToDouble(value -> value.getTotal())
+                .mapToDouble(value -> value.getTotalDetalle())
                 .sum();
     }
 
@@ -84,22 +92,6 @@ public class BoletaVenta {
 
     public void setFechaEmision(LocalDateTime fechaEmision) {
         this.fechaEmision = fechaEmision;
-    }
-
-    public Double getBaseImponible() {
-        return baseImponible;
-    }
-
-    public void setBaseImponible(Double baseImponible) {
-        this.baseImponible = baseImponible;
-    }
-
-    public Double getImporteIgv() {
-        return importeIgv;
-    }
-
-    public void setImporteIgv(Double importeIgv) {
-        this.importeIgv = importeIgv;
     }
 
     public Cliente getCliente() {

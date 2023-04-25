@@ -2,6 +2,7 @@ package com.rminaya.dev.store.model.entity.consignacion;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -18,7 +19,9 @@ public class Proveedor {
     @Size(min = 3, max = 255,message = "debe tener entre 3 y 255 caracteres.")
     @Column(name = "razon_comercial")
     private String razonComercial;
+    @NotNull
     private String direccion;
+    @NotNull
     private String telefono;
     @Column(columnDefinition = "boolean default false")
     private Boolean eliminado = false;

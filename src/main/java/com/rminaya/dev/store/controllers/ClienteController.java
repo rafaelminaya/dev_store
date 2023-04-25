@@ -20,26 +20,33 @@ public class ClienteController {
     private ClienteService clienteService;
 
     @GetMapping
-    public ResponseEntity<List<Cliente>> listar() {
+    public ResponseEntity<List<Cliente>> index() {
         return ResponseEntity.ok(this.clienteService.findAll());
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Cliente> obtener(@PathVariable("id") Long clienteId) {
+    public ResponseEntity<Cliente> show(@PathVariable("id") Long clienteId) {
         Cliente cliente = this.clienteService.findById(clienteId);
         return new ResponseEntity<>(cliente, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<?> guardar(@Valid @RequestBody Cliente cliente) {
+    public ResponseEntity<?> store(@Valid @RequestBody Cliente cliente) {
         Map<String, Object> response = new HashMap<>();
         response.put("id", this.clienteService.save(cliente));
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @PutMapping(value = "/{id}")
+    @PutMapping("/{id}")
+    public ResponseEntity<?> update(@Valid @RequestBody Cliente cliente, @PathVariable("id") Long clienteId) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", this.clienteService.update(cliente, clienteId));
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @PatchMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminar(@PathVariable("id") Long clienteId) {
+    public void delete(@PathVariable("id") Long clienteId) {
         this.clienteService.deleteById(clienteId);
     }
 }

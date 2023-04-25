@@ -44,10 +44,6 @@ public class Kardex {
         this.kardexDetalles.add(kardexDetalle);
     }
 
-    public void desprocesarKardex() {
-
-    }
-
     // GETTERS AND SETTERS
 
     public Long getId() {

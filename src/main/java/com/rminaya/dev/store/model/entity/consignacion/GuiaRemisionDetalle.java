@@ -22,7 +22,7 @@ public class GuiaRemisionDetalle {
 
     @ManyToOne(fetch = FetchType.LAZY)
     //@JoinColumn(name = "guia_remision_id")
-    @JsonIgnoreProperties({"guiaRemisionDetalles","hibernateLazyInitializer", "handler"})
+    @JsonIgnoreProperties(value = {"guiaRemisionDetalles","hibernateLazyInitializer", "handler"}, allowSetters = true)
     @JsonIgnore
     private GuiaRemision guiaRemision;
     @Column(name = "eliminado", columnDefinition = "boolean default false")
@@ -95,4 +95,14 @@ public class GuiaRemisionDetalle {
         this.eliminado = eliminado;
     }
 
+    @Override
+    public String toString() {
+        return "GuiaRemisionDetalle{" +
+                "id=" + id +
+                ", cantidad=" + cantidad +
+                ", precioVenta=" + precioVenta +
+                ", producto=" + producto +
+                ", eliminado=" + eliminado +
+                '}';
+    }
 }

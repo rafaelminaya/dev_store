@@ -40,10 +40,10 @@ INSERT INTO guia_emision_detalle (cantidad, precio_venta, producto_id, guia_remi
 INSERT INTO guia_emision_detalle (cantidad, precio_venta, producto_id, guia_remision_id, eliminado) VALUES (7, 160.0, 4, 2, 0);
 INSERT INTO guia_emision_detalle (cantidad, precio_venta, producto_id, guia_remision_id, eliminado) VALUES (20, 140.0, 5, 2, 0);
 -- BOLETA VENTA
-INSERT INTO boleta_venta (numero, fecha_emision, base_imponible, importe_igv, cliente_id) VALUES ('500', DATE_SUB(now(), INTERVAL 1 DAY), 111.11, 24.39, 1);
+INSERT INTO boleta_venta (numero, fecha_emision, cliente_id) VALUES ('500', DATE_SUB(now(), INTERVAL 1 DAY), 1);
 -- BOLETA VENTA DETALLE
-INSERT INTO boleta_venta_detalle (cantidad, precio_compra, precio_venta, base_imponible, importe_igv, producto_id, boleta_venta_id) VALUES (1, 45.0, 75.0, 61.5, 13.5, 1, 1);
-INSERT INTO boleta_venta_detalle (cantidad, precio_compra, precio_venta, base_imponible, importe_igv, producto_id, boleta_venta_id) VALUES (1, 35.0, 60.5, 49.61, 10.89, 2, 1);
+INSERT INTO boleta_venta_detalle (cantidad, precio_compra, precio_venta, producto_id, boleta_venta_id) VALUES (1, 45.0, 75.0, 1, 1);
+INSERT INTO boleta_venta_detalle (cantidad, precio_compra, precio_venta, producto_id, boleta_venta_id) VALUES (1, 35.0, 60.5, 2, 1);
 -- KARDEX
 INSERT INTO kardex (numero, comprobante_id, fecha_emision, tipo_operacion_id) VALUES ('100', 1, DATE_SUB(now(), INTERVAL 2 DAY), 2);
 INSERT INTO kardex (numero, comprobante_id, fecha_emision, tipo_operacion_id) VALUES ('101', 2, DATE_SUB(now(), INTERVAL 2 DAY), 2);

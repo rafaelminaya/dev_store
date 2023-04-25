@@ -47,8 +47,8 @@ public class MarcaServiceImpl implements MarcaService {
 
     @Override
     @Transactional
-    public Long update(Marca marca, Long marcaId) {
-        Marca marcaBuscada = this.findById(marcaId);
+        public Long update(Marca marca, Long id) {
+        Marca marcaBuscada = this.findById(id);
         marcaBuscada.setNombre(marca.getNombre());
         return this.marcaRepository.save(marcaBuscada).getId();
     }

@@ -12,22 +12,25 @@ public class BoletaVentaDetalle {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Integer cantidad;
-    @Column(name = "precio_compra")
     private Double precioCompra;
-    @Column(name = "precio_venta")
     private Double precioVenta;
-    @Column(name = "base_imponible")
-    private Double baseImponible;
-    @Column(name = "importe_igv")
-    private Double importeIgv;
     @Column(columnDefinition = "boolean default false")
     private Boolean eliminado = false;
     @ManyToOne
     @JoinColumn(name = "producto_id")
     private Producto producto;
+    private static final Double PORCENTAJE_IGV = 0.18;
 
     // MÉTODOS
-    public Double getTotal() {
+    public Double getBaseImponible() {
+        return (this.getTotalDetalle() / (1 + PORCENTAJE_IGV));
+    }
+
+    public Double getImporteIgv() {
+        return this.getTotalDetalle() - this.getBaseImponible();
+    }
+
+    public Double getTotalDetalle() {
         return this.precioVenta * this.cantidad;
     }
 
@@ -63,22 +66,6 @@ public class BoletaVentaDetalle {
 
     public void setPrecioVenta(Double precioVenta) {
         this.precioVenta = precioVenta;
-    }
-
-    public Double getBaseImponible() {
-        return baseImponible;
-    }
-
-    public void setBaseImponible(Double baseImponible) {
-        this.baseImponible = baseImponible;
-    }
-
-    public Double getImporteIgv() {
-        return importeIgv;
-    }
-
-    public void setImporteIgv(Double importeIgv) {
-        this.importeIgv = importeIgv;
     }
 
     public Producto getProducto() {

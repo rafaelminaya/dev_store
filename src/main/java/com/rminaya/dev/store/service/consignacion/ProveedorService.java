@@ -8,5 +8,6 @@ public interface ProveedorService {
     List<Proveedor> findAll();
     Proveedor findById(Long id);
     Long save(Proveedor proveedor);
+    Long update(Proveedor proveedor, Long id);
     void deleteById(Long id);
 }

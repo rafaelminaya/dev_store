@@ -44,7 +44,7 @@ public interface BoletaVentaRepository extends JpaRepository<BoletaVenta, Long> 
             "SUM(bt.cantidad) AS boletaCantidad, " +
             "SUM(bt.cantidad * bt.precioCompra) AS boletaPrecioCompra, " +
             "SUM(bt.cantidad * bt.precioVenta) AS boletaPrecioVenta, " +
-            "SUM((bt.baseImponible + bt.importeIgv) * bt.cantidad) AS boletaPrecioNeto " +
+            "SUM((bt.getBaseImponible() + bt.getImporteIgv()) * bt.cantidad) AS boletaPrecioNeto " +
             "FROM BoletaVenta AS b " +
             "JOIN b.boletaVentaDetalles bt " +
             "JOIN bt.producto AS p " +

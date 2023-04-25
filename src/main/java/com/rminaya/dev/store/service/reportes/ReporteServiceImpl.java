@@ -55,6 +55,7 @@ public class ReporteServiceImpl implements ReporteService {
         // Obtengo los productos vendidos del proveedor en el rango de fechas recibido
         LocalDateTime fechaInicio = LocalDateTime.of(liquidacionDto.getFechaInicio(), LocalTime.MIN);
         LocalDateTime fechaFin = LocalDateTime.of(liquidacionDto.getFechaFin(), LocalTime.MAX);
+
         return this.boletaVentaRepository.findByProductosAgrupados(productosByProveedor,
                 fechaInicio, fechaFin);
     }

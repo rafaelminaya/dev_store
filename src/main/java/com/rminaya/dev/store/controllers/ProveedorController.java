@@ -37,7 +37,14 @@ public class ProveedorController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @PutMapping(value = "/{id}")
+    @PutMapping("/{id}")
+    public ResponseEntity<?> update(@Valid @RequestBody Proveedor proveedor, @PathVariable("id") Long proveedorId) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", this.proveedorService.update(proveedor, proveedorId));
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @PatchMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
         this.proveedorService.deleteById(id);

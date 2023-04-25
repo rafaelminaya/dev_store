@@ -6,10 +6,7 @@ import com.rminaya.dev.store.model.entity.almacen.KardexDetalle;
 import com.rminaya.dev.store.model.entity.almacen.Operacion;
 import com.rminaya.dev.store.model.entity.almacen.TipoOperacion;
 import com.rminaya.dev.store.model.entity.consignacion.GuiaRemision;
-import com.rminaya.dev.store.repository.GuiaRemisionRepository;
-import com.rminaya.dev.store.repository.KardexDetalleRepository;
-import com.rminaya.dev.store.repository.KardexRepository;
-import com.rminaya.dev.store.repository.TipoOperacionRepository;
+import com.rminaya.dev.store.repository.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,8 +20,8 @@ public class GuiaRemisionServiceImpl implements GuiaRemisionService {
     private final KardexDetalleRepository kardexDetalleRepository;
     private final TipoOperacionRepository tipoOperacionRepository;
 
-
     public GuiaRemisionServiceImpl(GuiaRemisionRepository guiaRemisionRepository,
+
                                    KardexRepository kardexRepository,
                                    KardexDetalleRepository kardexDetalleRepository,
                                    TipoOperacionRepository tipoOperacionRepository) {
@@ -54,11 +51,35 @@ public class GuiaRemisionServiceImpl implements GuiaRemisionService {
     @Override
     @Transactional
     public Long save(GuiaRemision guiaRemision) {
+        if (guiaRemision.getId() != null && guiaRemision.getId() > 0) {
+            guiaRemision.setId(0L);
+        }
 
         guiaRemision.getGuiaRemisionDetalles()
                 .forEach(guiaRemisionDetalle -> guiaRemisionDetalle.setGuiaRemision(guiaRemision));
 
         return this.guiaRemisionRepository.save(guiaRemision).getId();
+    }
+
+    @Override
+    @Transactional
+    public Long update(GuiaRemision guiaRemision, Long id) {
+
+        GuiaRemision guiaRemisionBuscada = this.findById(id);
+
+        guiaRemisionBuscada.setNumero(guiaRemision.getNumero());
+        guiaRemisionBuscada.setFechaEmision(guiaRemision.getFechaEmision());
+        guiaRemisionBuscada.setPorcentajeComision(guiaRemision.getPorcentajeComision());
+        guiaRemisionBuscada.setProveedor(guiaRemision.getProveedor());
+        // Actualizamos detalles
+        guiaRemisionBuscada.getGuiaRemisionDetalles().forEach(guiaRemisionDetalle -> guiaRemisionDetalle.setEliminado(true));
+        guiaRemisionBuscada.setGuiaRemisionDetalles(guiaRemision.getGuiaRemisionDetalles());
+        // asginamos la cabecera de cada guía detalle para que asigne el ID de la cabecera
+        guiaRemisionBuscada.getGuiaRemisionDetalles()
+                .forEach(detalle -> detalle.setGuiaRemision(guiaRemisionBuscada));
+
+        // guardamos los cambios
+        return this.guiaRemisionRepository.save(guiaRemisionBuscada).getId();
     }
 
     @Override

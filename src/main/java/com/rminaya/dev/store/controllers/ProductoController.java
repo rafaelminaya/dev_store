@@ -1,5 +1,6 @@
 package com.rminaya.dev.store.controllers;
 
+import com.rminaya.dev.store.model.entity.common.Marca;
 import com.rminaya.dev.store.model.entity.common.Producto;
 import com.rminaya.dev.store.service.common.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +37,14 @@ public class ProductoController {
         response.put("id", this.productoService.save(producto));
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+    @PutMapping("/{id}")
+    public ResponseEntity<?> update(@Valid @RequestBody  Producto producto, @PathVariable("id") Long productoId) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", this.productoService.update(producto, productoId));
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
 
-    @PutMapping(value = "/{id}")
+    @PatchMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
         this.productoService.deleteById(id);
