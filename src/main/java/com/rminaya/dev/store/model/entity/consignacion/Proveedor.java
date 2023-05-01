@@ -19,6 +19,7 @@ public class Proveedor {
     @Size(min = 3, max = 255,message = "debe tener entre 3 y 255 caracteres.")
     @Column(name = "razon_comercial")
     private String razonComercial;
+    private String email;
     @NotNull
     private String direccion;
     @NotNull
@@ -49,6 +50,14 @@ public class Proveedor {
 
     public void setRazonComercial(String razonComercial) {
         this.razonComercial = razonComercial;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getDireccion() {

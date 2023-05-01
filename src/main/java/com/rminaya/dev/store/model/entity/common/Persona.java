@@ -10,8 +10,8 @@ import javax.validation.constraints.Size;
 public class Persona {
     //ATRIBUTOS
     @NotEmpty(message = "no puede estar vacio.")
-    @Size( min = 8, max = 13, message = "debe tener entre 3 y 13 caracteres.")
-    protected String dni;
+    @Size( min = 8, max = 13, message = "debe tener entre 8 y 13 caracteres.")
+    protected String numeroDocumento;
     @NotEmpty(message = "no puede estar vacio.")
     @Size( min = 2, max = 255, message = "debe tener entre 2 y 255 caracteres.")
     protected String nombre;
@@ -23,12 +23,12 @@ public class Persona {
     protected Boolean eliminado = false;
 
     // GETTERS AND SETTERS
-    public String getDni() {
-        return dni;
+    public String getNumeroDocumento() {
+        return numeroDocumento;
     }
 
-    public void setDni(String dni) {
-        this.dni = dni;
+    public void setNumeroDocumento(String numeroDocumento) {
+        this.numeroDocumento = numeroDocumento;
     }
 
     public String getNombre() {

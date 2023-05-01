@@ -44,7 +44,7 @@ public class ClienteController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @PatchMapping(value = "/{id}")
+    @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("id") Long clienteId) {
         this.clienteService.deleteById(clienteId);

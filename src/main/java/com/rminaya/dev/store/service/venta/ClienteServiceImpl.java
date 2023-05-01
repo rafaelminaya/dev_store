@@ -46,7 +46,7 @@ public class ClienteServiceImpl implements ClienteService {
     @Override
     public Long update(Cliente cliente, Long id) {
         Cliente clienteBuscado = this.findById(id);
-        clienteBuscado.setDni(cliente.getDni());
+        clienteBuscado.setNumeroDocumento(cliente.getNumeroDocumento());
         clienteBuscado.setNombre(cliente.getNombre());
         clienteBuscado.setDireccion(cliente.getDireccion());
         clienteBuscado.setTelefono(cliente.getTelefono());

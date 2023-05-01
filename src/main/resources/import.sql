@@ -14,14 +14,14 @@ INSERT INTO marcas (nombre) VALUES ('John Smedley');
 INSERT INTO marcas (nombre) VALUES ('Cos');
 INSERT INTO marcas (nombre) VALUES ('Everlane');
 -- PROVEEDORES
-INSERT INTO proveedores (ruc, razon_comercial, direccion, telefono) VALUES ('68512874621', 'Lacoste', 'Av Javier Prado 2343', '958746325');
-INSERT INTO proveedores (ruc, razon_comercial, direccion, telefono) VALUES ('68512874622', 'Levis', 'Av Los Alisos 5874', '958423058');
-INSERT INTO proveedores (ruc, razon_comercial, direccion, telefono) VALUES ('68512874623', 'Calvin Klein', 'Av Los Jasmines 2114', '987023843');
-INSERT INTO proveedores (ruc, razon_comercial, direccion, telefono) VALUES ('68512874624', 'Ralph Lauren', 'Calle Los Rosales 152', '968017658');
+INSERT INTO proveedores (ruc, razon_comercial, email, direccion, telefono) VALUES ('68512874621', 'Lacoste', 'lacoste.admin@lacoste.com','Av Javier Prado 2343', '958746325');
+INSERT INTO proveedores (ruc, razon_comercial, email, direccion, telefono) VALUES ('68512874622', 'Levis', 'levis.ceo@levis.com', 'Av Los Alisos 5874', '958423058');
+INSERT INTO proveedores (ruc, razon_comercial, email, direccion, telefono) VALUES ('68512874623', 'Calvin Klein', 'calvi.klein.ceo@ck.com', 'Av Los Jasmines 2114', '987023843');
+INSERT INTO proveedores (ruc, razon_comercial, email, direccion, telefono) VALUES ('68512874624', 'Ralph Lauren', 'ralph.lauren.cm@rl.com', 'Calle Los Rosales 152', '968017658');
 -- CLIENTES
-INSERT INTO clientes (dni, nombre, direccion, telefono) VALUES ('08459685', 'Ismael Rodriguez', 'Lima', '958745863');
-INSERT INTO clientes (dni, nombre, direccion, telefono) VALUES ('48569215', 'Sara Flores', 'Surquillo', '968541236');
-INSERT INTO clientes (dni, nombre, direccion, telefono) VALUES ('45872014', 'Gabriela Juarez', 'Surco', '968572056');
+INSERT INTO clientes (numero_documento, nombre, direccion, telefono) VALUES ('08459685', 'Ismael Rodriguez', 'Lima', '958745863');
+INSERT INTO clientes (numero_documento, nombre, direccion, telefono) VALUES ('48569215', 'Sara Flores', 'Surquillo', '968541236');
+INSERT INTO clientes (numero_documento, nombre, direccion, telefono) VALUES ('45872014', 'Gabriela Juarez', 'Surco', '968572056');
 -- PRODUCTOS
 INSERT INTO productos (codigo, nombre, talla, color, precio_compra, precio_venta, marca_id)  VALUES ('CA-Z', 'Camiseta hombre','M', 'AZUL', 45.0, 75.0, 1);
 INSERT INTO productos (codigo, nombre, talla, color, precio_compra, precio_venta, marca_id) VALUES ('CA-Z','Polo hombre','L','NEGRO', 36.3, 60.5, 1);
@@ -40,10 +40,10 @@ INSERT INTO guia_emision_detalle (cantidad, precio_venta, producto_id, guia_remi
 INSERT INTO guia_emision_detalle (cantidad, precio_venta, producto_id, guia_remision_id, eliminado) VALUES (7, 160.0, 4, 2, 0);
 INSERT INTO guia_emision_detalle (cantidad, precio_venta, producto_id, guia_remision_id, eliminado) VALUES (20, 140.0, 5, 2, 0);
 -- BOLETA VENTA
-INSERT INTO boleta_venta (numero, fecha_emision, cliente_id) VALUES ('500', DATE_SUB(now(), INTERVAL 1 DAY), 1);
+INSERT INTO boleta_venta (numero, fecha_emision, base_imponible, importe_igv, total, cliente_id) VALUES ('500', DATE_SUB(now(), INTERVAL 1 DAY), 111.11, 24.39, 135.5, 1);
 -- BOLETA VENTA DETALLE
-INSERT INTO boleta_venta_detalle (cantidad, precio_compra, precio_venta, producto_id, boleta_venta_id) VALUES (1, 45.0, 75.0, 1, 1);
-INSERT INTO boleta_venta_detalle (cantidad, precio_compra, precio_venta, producto_id, boleta_venta_id) VALUES (1, 35.0, 60.5, 2, 1);
+INSERT INTO boleta_venta_detalle (cantidad, precio_compra, precio_venta, base_imponible, importe_igv, total_detalle, producto_id, boleta_venta_id) VALUES (1, 45.0, 75.0, 61.5, 13.5, 75.0, 1, 1);
+INSERT INTO boleta_venta_detalle (cantidad, precio_compra, precio_venta, base_imponible, importe_igv, total_detalle, producto_id, boleta_venta_id) VALUES (1, 35.0, 60.5, 49.61, 10.89, 60.5, 2, 1);
 -- KARDEX
 INSERT INTO kardex (numero, comprobante_id, fecha_emision, tipo_operacion_id) VALUES ('100', 1, DATE_SUB(now(), INTERVAL 2 DAY), 2);
 INSERT INTO kardex (numero, comprobante_id, fecha_emision, tipo_operacion_id) VALUES ('101', 2, DATE_SUB(now(), INTERVAL 2 DAY), 2);

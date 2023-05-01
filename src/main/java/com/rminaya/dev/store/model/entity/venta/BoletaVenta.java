@@ -25,6 +25,9 @@ public class BoletaVenta {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime fechaEmision;
+    private Double baseImponible;
+    private Double importeIgv;
+    private Double total;
     @Column(columnDefinition = "boolean default false")
     private Boolean eliminado = false;
     @ManyToOne
@@ -41,21 +44,21 @@ public class BoletaVenta {
     }
 
     // MÉTODOS
-    public Double getBaseImponible() {
+    public Double calcularBaseImponible() {
         return this.boletaVentaDetalles
                 .stream()
-                .mapToDouble(value -> value.getBaseImponible())
+                .mapToDouble(value -> value.calcularBaseImponible())
                 .sum();
     }
 
-    public Double getImporteIgv() {
+    public Double calcularImporteIgv() {
         return this.boletaVentaDetalles
                 .stream()
-                .mapToDouble(value -> value.getImporteIgv())
+                .mapToDouble(value -> value.calcularImporteIgv())
                 .sum();
     }
 
-    public Double getTotal() {
+    public Double calcularTotal() {
          /*
         Double total = 0.0;
         for (BoletaVentaDetalle detalle : this.boletaVentaDetalles) {
@@ -110,6 +113,29 @@ public class BoletaVenta {
         this.boletaVentaDetalles = boletaVentaDetalles;
     }
 
+    public Double getBaseImponible() {
+        return baseImponible;
+    }
+
+    public void setBaseImponible(Double baseImponible) {
+        this.baseImponible = baseImponible;
+    }
+
+    public Double getImporteIgv() {
+        return importeIgv;
+    }
+
+    public void setImporteIgv(Double importeIgv) {
+        this.importeIgv = importeIgv;
+    }
+
+    public Double getTotal() {
+        return total;
+    }
+
+    public void setTotal(Double total) {
+        this.total = total;
+    }
     public Boolean getEliminado() {
         return eliminado;
     }

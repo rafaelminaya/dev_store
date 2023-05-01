@@ -56,7 +56,7 @@ public class ConsignacionController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping(value = "/{id}")
+    @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
         this.guiaRemisionService.deleteById(id);

@@ -7,6 +7,7 @@ import com.rminaya.dev.store.repository.GuiaRemisionRepository;
 import com.rminaya.dev.store.repository.KardexRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -26,21 +27,24 @@ public class ReporteServiceImpl implements ReporteService {
     }
 
     @Override
-    public List<IReporteVentasDto> registroVentas(VentasInDto ventasInDto) {
-        LocalDateTime fechaInicio = LocalDateTime.of(ventasInDto.getFechaInicio(), LocalTime.MIN);
-        LocalDateTime fechaFin = LocalDateTime.of(ventasInDto.getFechaFin(), LocalTime.MAX);
-        return this.boletaVentaRepository.reporteVenta(fechaInicio, fechaFin);
+    public List<IReporteRegistroVentasDto> registroVentas(String fechaInicio, String fechaFin) {
+        // Convertimos las fechas de tipo String a LocalDate le añadimos la hora mínima y máxima
+        LocalDateTime fechaInicioDateTime = LocalDateTime.of(LocalDate.parse(fechaInicio), LocalTime.MIN);
+        LocalDateTime fechaFinDateTime = LocalDateTime.of(LocalDate.parse(fechaFin), LocalTime.MAX);
+
+        return this.boletaVentaRepository.reporteVenta(fechaInicioDateTime, fechaFinDateTime);
     }
 
     @Override
-    public List<IReporteKardexPorProductoDto> kardexPorProducto(KardexProductoDto kardexProductoDto) {
-        return this.kardexRepository.findByProductoId(kardexProductoDto.getProductoId());
+    public List<IReporteKardexPorProductoDto> kardexPorProducto(String productoId) {
+        // Convertimos el "String" recbido en "Long" que es lo que se necesita
+        return this.kardexRepository.findByProductoId(Long.valueOf(productoId));
     }
 
     @Override
-    public List<IReporteLiquidacionDto> liquidacionProveedores(LiquidacionDto liquidacionDto) {
+    public List<IReporteLiquidacionDto> liquidacionProveedores(String proveedorId, String fechaInicio, String fechaFin) {
         // Obtengo las guías del proveedor
-        List<GuiaRemision> guiasByProveedor = this.guiaRemisionRepository.findByProveedor(liquidacionDto.getProveedorId());
+        List<GuiaRemision> guiasByProveedor = this.guiaRemisionRepository.findByProveedor(Long.valueOf(proveedorId));
         // Obtengo los id de los productos del proveedor
         List<Long> productosByProveedor = guiasByProveedor
                 .stream()
@@ -53,10 +57,10 @@ public class ReporteServiceImpl implements ReporteService {
                 liquidacionDto.getFechaInicio(), liquidacionDto.getFechaFin());
         */
         // Obtengo los productos vendidos del proveedor en el rango de fechas recibido
-        LocalDateTime fechaInicio = LocalDateTime.of(liquidacionDto.getFechaInicio(), LocalTime.MIN);
-        LocalDateTime fechaFin = LocalDateTime.of(liquidacionDto.getFechaFin(), LocalTime.MAX);
+        LocalDateTime fechaInicioDateTime = LocalDateTime.of(LocalDate.parse(fechaInicio), LocalTime.MIN);
+        LocalDateTime fechaFinDateTime = LocalDateTime.of(LocalDate.parse(fechaFin), LocalTime.MAX);
 
         return this.boletaVentaRepository.findByProductosAgrupados(productosByProveedor,
-                fechaInicio, fechaFin);
+                fechaInicioDateTime, fechaFinDateTime);
     }
 }

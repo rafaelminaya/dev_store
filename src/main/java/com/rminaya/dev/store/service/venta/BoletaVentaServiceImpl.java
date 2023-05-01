@@ -57,6 +57,18 @@ public class BoletaVentaServiceImpl implements BoletaVentaService {
     public Long save(BoletaVenta boletaVenta) {
         // Crear boleta de venta y detalles
         boletaVenta.setFechaEmision(LocalDateTime.now());
+
+        boletaVenta.getBoletaVentaDetalles().forEach(boletaVentaDetalle -> {
+            boletaVentaDetalle.setBaseImponible(boletaVentaDetalle.calcularBaseImponible());
+            boletaVentaDetalle.setImporteIgv(boletaVentaDetalle.calcularImporteIgv());
+            boletaVentaDetalle.setTotalDetalle(boletaVentaDetalle.calcularTotalDetalle());
+        });
+
+        boletaVenta.setBaseImponible(boletaVenta.calcularBaseImponible());
+        boletaVenta.setImporteIgv(boletaVenta.calcularImporteIgv());
+        boletaVenta.setTotal(boletaVenta.calcularTotal());
+
+
         boletaVenta = this.boletaVentaRepository.save(boletaVenta);
 
         // Almacenar la venta en el kardex y detalles

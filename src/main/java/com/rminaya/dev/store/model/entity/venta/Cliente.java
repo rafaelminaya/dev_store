@@ -25,10 +25,11 @@ public class Cliente extends Persona {
     public String toString() {
         return "Cliente{" +
                 "id=" + id +
-                ", dni='" + dni + '\'' +
+                ", numeroDocumento='" + numeroDocumento + '\'' +
                 ", nombre='" + nombre + '\'' +
                 ", direccion='" + direccion + '\'' +
                 ", telefono='" + telefono + '\'' +
+                ", eliminado=" + eliminado +
                 '}';
     }
 }
