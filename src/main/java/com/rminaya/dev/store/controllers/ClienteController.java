@@ -3,6 +3,7 @@ package com.rminaya.dev.store.controllers;
 import com.rminaya.dev.store.model.entity.venta.Cliente;
 import com.rminaya.dev.store.service.venta.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,11 @@ public class ClienteController {
     @GetMapping
     public ResponseEntity<List<Cliente>> index() {
         return ResponseEntity.ok(this.clienteService.findAll());
+    }
+
+    @GetMapping(value = "page/{page}")
+    public ResponseEntity<Page<Cliente>> index(@PathVariable Integer page) {
+        return ResponseEntity.ok(this.clienteService.findAll(page));
     }
 
     @GetMapping(value = "/{id}")

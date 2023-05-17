@@ -1,8 +1,15 @@
 package com.rminaya.dev.store.service.common;
 
 import com.rminaya.dev.store.exceptions.DevStoreExceptions;
+import com.rminaya.dev.store.model.dto.ProductoByMarca;
+import com.rminaya.dev.store.model.entity.common.Marca;
 import com.rminaya.dev.store.model.entity.common.Producto;
+import com.rminaya.dev.store.repository.MarcaRepository;
 import com.rminaya.dev.store.repository.ProductoRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,10 +20,12 @@ import java.util.List;
 public class ProductoServiceImpl implements ProductoService {
     // ATRIBUTOS - Dependencias
     private final ProductoRepository productoRepository;
+    private final MarcaRepository marcaRepository;
 
     // CONSTRUCTOR - Inyección de dependencias
-    public ProductoServiceImpl(ProductoRepository productoRepository) {
+    public ProductoServiceImpl(ProductoRepository productoRepository, MarcaRepository marcaRepository) {
         this.productoRepository = productoRepository;
+        this.marcaRepository = marcaRepository;
     }
 
     @Override
@@ -29,11 +38,23 @@ public class ProductoServiceImpl implements ProductoService {
     }
 
     @Override
+    public Page<Producto> findAll(Integer page) {
+        Pageable pageable = PageRequest.of(page, 6, Sort.by("id").descending());
+
+        return this.productoRepository.findAllByEliminado(false, pageable);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public Producto findById(Long id) {
         return this.productoRepository.findById(id)
                 .filter(producto -> producto.getEliminado().equals(false))
                 .orElseThrow(() -> new DevStoreExceptions("No se encontró el producto.", HttpStatus.NOT_FOUND));
+    }
+
+    @Override
+    public List<Producto> findByFiltroVenta(String termino) {
+        return this.productoRepository.findByFiltroVenta(termino);
     }
 
     @Override
@@ -64,5 +85,15 @@ public class ProductoServiceImpl implements ProductoService {
         Producto producto = this.findById(id);
         producto.setEliminado(true);
         this.productoRepository.save(producto);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Producto> findByMarcaId(Long marcaId) {
+        Marca marcaBuscada = this.marcaRepository.findById(marcaId)
+                .filter(marca -> marca.getEliminado().equals(false))
+                .orElseThrow(() -> new DevStoreExceptions("No se encontró la marca.", HttpStatus.NOT_FOUND));
+
+        return  this.productoRepository.findByMarcaId(marcaBuscada.getId());
     }
 }

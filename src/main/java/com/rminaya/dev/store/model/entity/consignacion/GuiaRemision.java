@@ -6,7 +6,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,12 +21,12 @@ public class GuiaRemision {
     @Size(min = 3, max = 6, message = "debe tener entre 3 y 6 caracteres.")
     private String numero;
     @NotNull(message = "no puede estar vacio.")
-    @Column(name = "fecha_emision", columnDefinition = "DATETIME")
+    //@Column(name = "fecha_emision", columnDefinition = "DATETIME")
     //@Temporal(TemporalType.DATE)
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     //@JsonFormat(pattern = "yyyy-MM-ddTHH:mm:ss", shape = JsonFormat.Shape.STRING)
-    private LocalDateTime fechaEmision;
+    private LocalDate fechaEmision;
     @NotNull(message = "no puede estar vacio.")
     @Min(value = 0, message = "no debe ser menor que 0.")
     @Max(value = 100, message = "no debe ser mayor que 100.")
@@ -91,11 +91,11 @@ public class GuiaRemision {
         this.numero = numero;
     }
 
-    public LocalDateTime getFechaEmision() {
+    public LocalDate getFechaEmision() {
         return fechaEmision;
     }
 
-    public void setFechaEmision(LocalDateTime fechaEmision) {
+    public void setFechaEmision(LocalDate fechaEmision) {
         this.fechaEmision = fechaEmision;
     }
 

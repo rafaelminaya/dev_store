@@ -3,6 +3,10 @@ package com.rminaya.dev.store.service.venta;
 import com.rminaya.dev.store.exceptions.DevStoreExceptions;
 import com.rminaya.dev.store.model.entity.venta.Cliente;
 import com.rminaya.dev.store.repository.ClienteRespository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +28,13 @@ public class ClienteServiceImpl implements ClienteService {
                 .stream()
                 .filter(cliente -> cliente.getEliminado().equals(false))
                 .toList();
+    }
+
+    @Override
+    public Page<Cliente> findAll(Integer page) {
+        Pageable pageable = PageRequest.of(page, 6, Sort.by("id").descending());
+
+        return this.clienteRespository.findAllByEliminado(false, pageable);
     }
 
     @Override

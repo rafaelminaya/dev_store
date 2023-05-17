@@ -3,6 +3,7 @@ package com.rminaya.dev.store.controllers;
 import com.rminaya.dev.store.model.entity.consignacion.Proveedor;
 import com.rminaya.dev.store.service.consignacion.ProveedorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,11 @@ public class ProveedorController {
     @GetMapping
     public ResponseEntity<List<Proveedor>> index() {
         return ResponseEntity.ok(this.proveedorService.findAll());
+    }
+
+    @GetMapping(value = "page/{page}")
+    public ResponseEntity<Page<Proveedor>> index(@PathVariable Integer page) {
+        return ResponseEntity.ok(this.proveedorService.findAll(page));
     }
 
     @GetMapping(value = "/{id}")

@@ -1,6 +1,7 @@
 package com.rminaya.dev.store.model.entity.common;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.rminaya.dev.store.model.dto.ProductoByMarca;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -9,7 +10,7 @@ import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "productos")
-@JsonIgnoreProperties({ "handler","hibernateLazyInitializer","FieldHandler"})
+@JsonIgnoreProperties({"handler", "hibernateLazyInitializer", "FieldHandler"})
 public class Producto {
     //ATRIBUTOS
     @Id
@@ -38,6 +39,18 @@ public class Producto {
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @JoinColumn(name = "marca_id")
     private Marca marca;
+
+    // MÉTODOS
+    public String getCadenaProducto() {
+        String cadenaProducto, itemColor, itemTalla;
+
+        itemColor = this.getColor().equals("") ? "" : " - ".concat(this.getColor());
+        itemTalla = this.getTalla().equals("") ? "" : " - ".concat(this.getTalla());
+
+        cadenaProducto = this.getCodigo().concat(" - ").concat(this.getNombre()).concat(itemColor).concat(itemTalla);
+
+        return cadenaProducto;
+    }
 
     // GETTERS AND SETTERS
     public Long getId() {

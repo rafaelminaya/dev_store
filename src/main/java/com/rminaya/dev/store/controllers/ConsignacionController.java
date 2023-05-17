@@ -1,8 +1,10 @@
 package com.rminaya.dev.store.controllers;
 
 import com.rminaya.dev.store.model.entity.consignacion.GuiaRemision;
+import com.rminaya.dev.store.model.entity.venta.Cliente;
 import com.rminaya.dev.store.service.consignacion.GuiaRemisionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +24,11 @@ public class ConsignacionController {
     @GetMapping
     public ResponseEntity<List<GuiaRemision>> index() {
         return ResponseEntity.ok(this.guiaRemisionService.findAll());
+    }
+
+    @GetMapping(value = "page/{page}")
+    public ResponseEntity<Page<GuiaRemision>> index(@PathVariable Integer page) {
+        return ResponseEntity.ok(this.guiaRemisionService.findAll(page));
     }
 
     @GetMapping(value = "/{id}")

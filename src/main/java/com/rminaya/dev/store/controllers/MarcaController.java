@@ -3,6 +3,7 @@ package com.rminaya.dev.store.controllers;
 import com.rminaya.dev.store.model.entity.common.Marca;
 import com.rminaya.dev.store.service.common.MarcaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,10 @@ public class MarcaController {
     @GetMapping
     public ResponseEntity<List<Marca>> index() {
         return ResponseEntity.ok(this.marcaService.findAll());
+    }
+    @GetMapping(value = "page/{page}")
+    public ResponseEntity<Page<Marca>> index(@PathVariable Integer page) {
+        return ResponseEntity.ok(this.marcaService.findAll(page));
     }
 
     @GetMapping(value = "/{id}")

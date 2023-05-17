@@ -10,6 +10,10 @@ import com.rminaya.dev.store.repository.BoletaVentaRepository;
 import com.rminaya.dev.store.repository.KardexDetalleRepository;
 import com.rminaya.dev.store.repository.KardexRepository;
 import com.rminaya.dev.store.repository.TipoOperacionRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,6 +46,13 @@ public class BoletaVentaServiceImpl implements BoletaVentaService {
                 .stream()
                 .filter(boletaVenta -> boletaVenta.getEliminado().equals(false))
                 .toList();
+    }
+
+    @Override
+    public Page<BoletaVenta> findAll(Integer page) {
+        Pageable pageable = PageRequest.of(page, 6, Sort.by("id").descending());
+
+        return this.boletaVentaRepository.findAllByEliminado(false, pageable);
     }
 
     @Override

@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface KardexRepository extends JpaRepository<Kardex, Long> {
-    @Query("SELECT k FROM Kardex AS k JOIN FETCH k.tipoOperacion AS o WHERE k.comprobanteId=?1 AND o.id=?2")
+    @Query("SELECT k FROM Kardex AS k JOIN FETCH k.tipoOperacion AS o WHERE k.eliminado = 0 AND k.comprobanteId=?1 AND o.id=?2")
     Optional<Kardex> kardexByIdAndTipoOperacion(Long guiaRemisionId, Long tipoOperacionId);
 
     //TODO : Confirmar si estos 2 métodos deberían estar acá o en "KardexDetalleRepository"

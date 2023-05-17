@@ -2,7 +2,10 @@ package com.rminaya.dev.store.repository;
 
 import com.rminaya.dev.store.model.dto.IReporteLiquidacionDto;
 import com.rminaya.dev.store.model.dto.IReporteRegistroVentasDto;
+import com.rminaya.dev.store.model.entity.consignacion.Proveedor;
 import com.rminaya.dev.store.model.entity.venta.BoletaVenta;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -11,6 +14,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface BoletaVentaRepository extends JpaRepository<BoletaVenta, Long> {
+
+    Page<BoletaVenta> findAllByEliminado(Boolean eliminado, Pageable pageable);
     @Query(value = """
             select\s
             bol.id as id,

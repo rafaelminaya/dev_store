@@ -3,6 +3,7 @@ package com.rminaya.dev.store.service.common;
 import com.rminaya.dev.store.exceptions.DevStoreExceptions;
 import com.rminaya.dev.store.model.entity.common.Marca;
 import com.rminaya.dev.store.repository.MarcaRepository;
+import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +27,14 @@ public class MarcaServiceImpl implements MarcaService {
                 .stream()
                 .filter(marca -> marca.getEliminado().equals(false))
                 .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Marca> findAll(Integer page) {
+        Pageable pageable = PageRequest.of(page, 6, Sort.by("id").descending());
+
+        return this.marcaRepository.findAllByEliminado(false, pageable);
     }
 
     @Override

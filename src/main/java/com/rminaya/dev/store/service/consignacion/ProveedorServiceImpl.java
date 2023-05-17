@@ -4,6 +4,10 @@ import com.rminaya.dev.store.exceptions.DevStoreExceptions;
 import com.rminaya.dev.store.model.entity.common.Marca;
 import com.rminaya.dev.store.model.entity.consignacion.Proveedor;
 import com.rminaya.dev.store.repository.ProveedorRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +31,13 @@ public class ProveedorServiceImpl implements ProveedorService {
                 .stream()
                 .filter(proveedor -> proveedor.getEliminado().equals(false))
                 .toList();
+    }
+
+    @Override
+    public Page<Proveedor> findAll(Integer page) {
+        Pageable pageable = PageRequest.of(page, 6, Sort.by("id").descending());
+
+        return this.proveedorRepository.findAllByEliminado(false, pageable);
     }
 
     @Override

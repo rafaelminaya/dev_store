@@ -1,6 +1,8 @@
 package com.rminaya.dev.store.repository;
 
 import com.rminaya.dev.store.model.entity.consignacion.GuiaRemision;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -8,6 +10,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface GuiaRemisionRepository extends JpaRepository<GuiaRemision, Long> {
+
+    Page<GuiaRemision> findAllByEliminado(Boolean eliminado, Pageable pageable);
+
     @Query("SELECT g FROM GuiaRemision AS g WHERE g.id = ?1 AND g.procesado = 0 AND g.eliminado = 0")
     Optional<GuiaRemision> findByIdAndNoProcesado(Long id);
 

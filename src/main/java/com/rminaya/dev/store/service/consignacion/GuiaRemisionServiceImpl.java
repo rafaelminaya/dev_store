@@ -6,11 +6,21 @@ import com.rminaya.dev.store.model.entity.almacen.KardexDetalle;
 import com.rminaya.dev.store.model.entity.almacen.Operacion;
 import com.rminaya.dev.store.model.entity.almacen.TipoOperacion;
 import com.rminaya.dev.store.model.entity.consignacion.GuiaRemision;
-import com.rminaya.dev.store.repository.*;
+import com.rminaya.dev.store.repository.GuiaRemisionRepository;
+import com.rminaya.dev.store.repository.KardexDetalleRepository;
+import com.rminaya.dev.store.repository.KardexRepository;
+import com.rminaya.dev.store.repository.TipoOperacionRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -21,7 +31,6 @@ public class GuiaRemisionServiceImpl implements GuiaRemisionService {
     private final TipoOperacionRepository tipoOperacionRepository;
 
     public GuiaRemisionServiceImpl(GuiaRemisionRepository guiaRemisionRepository,
-
                                    KardexRepository kardexRepository,
                                    KardexDetalleRepository kardexDetalleRepository,
                                    TipoOperacionRepository tipoOperacionRepository) {
@@ -38,6 +47,13 @@ public class GuiaRemisionServiceImpl implements GuiaRemisionService {
                 .stream()
                 .filter(guiaRemision -> guiaRemision.getEliminado().equals(false))
                 .toList();
+    }
+
+    @Override
+    public Page<GuiaRemision> findAll(Integer page) {
+        Pageable pageable = PageRequest.of(page, 6, Sort.by("id").descending());
+
+        return this.guiaRemisionRepository.findAllByEliminado(false, pageable);
     }
 
     @Override
@@ -95,7 +111,7 @@ public class GuiaRemisionServiceImpl implements GuiaRemisionService {
         Kardex kardex = new Kardex();
         kardex.setNumero(guiaRemisionBuscada.getNumero());
         kardex.setComprobanteId(guiaRemisionBuscada.getId());
-        kardex.setFechaEmision(guiaRemisionBuscada.getFechaEmision());
+        kardex.setFechaEmision(this.generarLocalDateTime(guiaRemisionBuscada.getFechaEmision()));
         // Obtenemos el tipo operación para una "consignación recibida"
         TipoOperacion tipoOperacion = tipoOperacionRepository.findById(Operacion.CONSIGNACION_RECIBIDA.getId())
                 .orElseThrow(() -> new DevStoreExceptions("No se encontró la la operación.", HttpStatus.NOT_FOUND));
@@ -111,7 +127,7 @@ public class GuiaRemisionServiceImpl implements GuiaRemisionService {
                     // Obtenemos el ultimo saldo del producto a registrar
                     Integer kardexDetalleUltimoSaldo = this.kardexRepository.KardexDetalleUltimoSaldoCantidad(
                             detalle.getProducto().getId(),
-                            detalle.getGuiaRemision().getFechaEmision());
+                            this.generarLocalDateTime(detalle.getGuiaRemision().getFechaEmision()));
                     // Obtenemos el ultimo saldo del producto registrado en algun kardex
                     Integer ultimoSaldoCantidad = 0;
 
@@ -125,7 +141,7 @@ public class GuiaRemisionServiceImpl implements GuiaRemisionService {
 
                     // Registramos los detalles del kardex
                     KardexDetalle kardexDetalle = new KardexDetalle();
-                    kardexDetalle.setFechaEmision(guiaRemisionBuscada.getFechaEmision());
+                    kardexDetalle.setFechaEmision(this.generarLocalDateTime(guiaRemisionBuscada.getFechaEmision()));
                     kardexDetalle.setProducto(detalle.getProducto());
 
                     kardexDetalle.setEntradaCantidad(detalle.getCantidad());
@@ -146,7 +162,7 @@ public class GuiaRemisionServiceImpl implements GuiaRemisionService {
                     // Obtengo los diferentes "kardex detalles" a actualizar según el nuevo moviemiento
                     List<KardexDetalle> kardexDetallesByProducto = this.kardexDetalleRepository.detallesByProductoAndFechaEmision(
                             detalle.getProducto().getId(),
-                            guiaRemisionBuscada.getFechaEmision());
+                            this.generarLocalDateTime(guiaRemisionBuscada.getFechaEmision()));
                     System.out.println("kardexDetallesByProducto: " + kardexDetallesByProducto);
 
                     // Re asignamos el último saldo cantidad
@@ -175,6 +191,10 @@ public class GuiaRemisionServiceImpl implements GuiaRemisionService {
         this.kardexRepository.save(kardex);
     }
 
+    private LocalDateTime generarLocalDateTime(LocalDate localDate){
+        return LocalDateTime.of(localDate, LocalTime.MIN);
+    }
+
     @Override
     @Transactional
     public void desprocesarKardex(Long guiaRemisionId) {
@@ -191,11 +211,11 @@ public class GuiaRemisionServiceImpl implements GuiaRemisionService {
                     // Obtengo los diferentes "kardex detalles" a actualizar según el nuevo moviemiento
                     List<KardexDetalle> kardexDetallesByProducto = this.kardexDetalleRepository.detallesByProductoAndFechaEmision(
                             detalle.getProducto().getId(),
-                            guiaRemisionBuscada.getFechaEmision());
+                            this.generarLocalDateTime(guiaRemisionBuscada.getFechaEmision()));
                     // Obtenemos el ultimo saldo del producto a registrar
                     Integer kardexDetalleUltimoSaldo = this.kardexRepository.KardexDetalleUltimoSaldoCantidad(
                             detalle.getProducto().getId(),
-                            detalle.getGuiaRemision().getFechaEmision());
+                            this.generarLocalDateTime(detalle.getGuiaRemision().getFechaEmision()));
                     // Obtenemos el ultimo saldo del producto registrado en algun kardex
                     Integer ultimoSaldoCantidad = 0;
 
