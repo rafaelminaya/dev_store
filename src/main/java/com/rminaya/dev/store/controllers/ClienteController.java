@@ -25,6 +25,7 @@ public class ClienteController {
         return ResponseEntity.ok(this.clienteService.findAll());
     }
 
+    // todo - verificar si el enpoint debe ser "page/{page}" o "/page/{page}" ese slash "/" al principio parece ser opcional
     @GetMapping(value = "page/{page}")
     public ResponseEntity<Page<Cliente>> index(@PathVariable Integer page) {
         return ResponseEntity.ok(this.clienteService.findAll(page));

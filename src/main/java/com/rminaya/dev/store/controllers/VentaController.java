@@ -1,5 +1,6 @@
 package com.rminaya.dev.store.controllers;
 
+import com.rminaya.dev.store.model.dto.BoletaVentaInDto;
 import com.rminaya.dev.store.model.entity.venta.BoletaVenta;
 import com.rminaya.dev.store.service.venta.BoletaVentaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +37,15 @@ public class VentaController {
         return new ResponseEntity<>(boletaVenta, HttpStatus.OK);
     }
 
+//    @PostMapping
+//    public ResponseEntity<?> store(@Valid @RequestBody BoletaVenta boletaVenta) {
+//        Map<String, Object> response = new HashMap<>();
+//        response.put("id", this.boletaVentaService.save(boletaVenta));
+//        return new ResponseEntity<>(response, HttpStatus.CREATED);
+//    }
+
     @PostMapping
-    public ResponseEntity<?> store(@Valid @RequestBody BoletaVenta boletaVenta) {
+    public ResponseEntity<?> store(@Valid @RequestBody BoletaVentaInDto boletaVenta) {
         Map<String, Object> response = new HashMap<>();
         response.put("id", this.boletaVentaService.save(boletaVenta));
         return new ResponseEntity<>(response, HttpStatus.CREATED);

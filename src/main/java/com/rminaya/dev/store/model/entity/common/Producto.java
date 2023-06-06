@@ -32,6 +32,8 @@ public class Producto {
     private Double precioCompra;
     @NotNull(message = "no puede estar vacio.")
     private Double precioVenta;
+    @Column(columnDefinition = "int default 0")
+    private Integer stock = 0;
     @Column(columnDefinition = "boolean default false")
     private Boolean eliminado = false;
     @NotNull(message = "no puede estar vacio.")
@@ -107,6 +109,14 @@ public class Producto {
 
     public void setPrecioVenta(Double precioVenta) {
         this.precioVenta = precioVenta;
+    }
+
+    public Integer getStock() {
+        return stock;
+    }
+
+    public void setStock(Integer stock) {
+        this.stock = stock;
     }
 
     public Marca getMarca() {

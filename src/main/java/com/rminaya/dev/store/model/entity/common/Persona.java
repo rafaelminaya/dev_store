@@ -17,7 +17,6 @@ public class Persona {
     protected String nombre;
     @NotNull
     protected String direccion;
-    @NotNull
     protected String telefono;
     @Column(columnDefinition = "boolean default false")
     protected Boolean eliminado = false;

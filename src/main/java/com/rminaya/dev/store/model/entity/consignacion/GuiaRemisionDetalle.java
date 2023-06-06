@@ -23,6 +23,7 @@ public class GuiaRemisionDetalle {
     @ManyToOne(fetch = FetchType.LAZY)
     //@JoinColumn(name = "guia_remision_id")
     @JsonIgnoreProperties(value = {"guiaRemisionDetalles","hibernateLazyInitializer", "handler"}, allowSetters = true)
+    //TODO - Este "@JsonIgnore" NO estaba comentado, verificar si está bien dejarlo sin comentar.
     @JsonIgnore
     private GuiaRemision guiaRemision;
     @Column(name = "eliminado", columnDefinition = "boolean default false")

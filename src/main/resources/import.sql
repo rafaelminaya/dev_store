@@ -23,13 +23,13 @@ INSERT INTO clientes (numero_documento, nombre, direccion, telefono) VALUES ('08
 INSERT INTO clientes (numero_documento, nombre, direccion, telefono) VALUES ('48569215', 'Sara Flores', 'Surquillo', '968541236');
 INSERT INTO clientes (numero_documento, nombre, direccion, telefono) VALUES ('45872014', 'Gabriela Juarez', 'Surco', '968572056');
 -- PRODUCTOS
-INSERT INTO productos (codigo, nombre, talla, color, precio_compra, precio_venta, marca_id)  VALUES ('CA-Z', 'Camiseta hombre','M', 'AZUL', 45.0, 75.0, 1);
-INSERT INTO productos (codigo, nombre, talla, color, precio_compra, precio_venta, marca_id) VALUES ('CA-Z','Polo hombre','L','NEGRO', 36.3, 60.5, 1);
-INSERT INTO productos (codigo, nombre, talla, color, precio_compra, precio_venta, marca_id) VALUES ('CA-P','Pantalon Jean hombre','32','AZUL', 90.0, 120.0, 2);
-INSERT INTO productos (codigo, nombre, talla, color, precio_compra, precio_venta, marca_id) VALUES ('CA-P','Pantalon vestir hombre','34','NEGRO', 120.0, 160.0, 2);
-INSERT INTO productos (codigo, nombre, talla, color, precio_compra, precio_venta, marca_id) VALUES ('CA-Z','Camisa hombre','S','VINO TINTO', 105.0, 140.0, 3);
-INSERT INTO productos (codigo, nombre, talla, color, precio_compra, precio_venta, marca_id) VALUES ('CA-G','Gorra hombre', 'M','BLANCO', 100.0, 170.0, 3);
-INSERT INTO productos (codigo, nombre, talla, color, precio_compra, precio_venta, marca_id) VALUES ('CA-C','Correa marron hombre','L','MARRON', 110.0, 180.0, 3);
+INSERT INTO productos (codigo, nombre, talla, color, precio_compra, precio_venta, stock, marca_id)  VALUES ('CA-Z', 'Camiseta hombre','M', 'AZUL', 45.0, 75.0, 12, 1);
+INSERT INTO productos (codigo, nombre, talla, color, precio_compra, precio_venta, stock, marca_id) VALUES ('CA-Z','Polo hombre','L','NEGRO', 36.3, 60.5, 10, 1);
+INSERT INTO productos (codigo, nombre, talla, color, precio_compra, precio_venta, stock, marca_id) VALUES ('CA-P','Pantalon Jean hombre','32','AZUL', 90.0, 120.0, 18,2);
+INSERT INTO productos (codigo, nombre, talla, color, precio_compra, precio_venta, stock, marca_id) VALUES ('CA-P','Pantalon vestir hombre','34','NEGRO', 120.0, 160.0, 7, 2);
+INSERT INTO productos (codigo, nombre, talla, color, precio_compra, precio_venta, stock, marca_id) VALUES ('CA-Z','Camisa hombre','S','VINO TINTO', 105.0, 140.0, 20, 3);
+INSERT INTO productos (codigo, nombre, talla, color, precio_compra, precio_venta, stock, marca_id) VALUES ('CA-G','Gorra hombre', 'M','BLANCO', 100.0, 170.0, 0, 3);
+INSERT INTO productos (codigo, nombre, talla, color, precio_compra, precio_venta, stock, marca_id) VALUES ('CA-C','Correa marron hombre','L','MARRON', 110.0, 180.0, 0, 3);
 -- GUIA REMISION
 INSERT INTO guia_remision (numero, fecha_emision, porcentaje_comision, proveedor_id, procesado, eliminado) VALUES ('100', DATE_SUB(now(), INTERVAL 2 DAY), 40, 1, 1, 0);
 INSERT INTO guia_remision (numero, fecha_emision, porcentaje_comision, proveedor_id, procesado, eliminado) VALUES ('101', DATE_SUB(now(), INTERVAL 2 DAY), 25, 2, 1, 0);

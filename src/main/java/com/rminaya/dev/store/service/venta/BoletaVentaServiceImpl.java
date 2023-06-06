@@ -1,15 +1,16 @@
 package com.rminaya.dev.store.service.venta;
 
 import com.rminaya.dev.store.exceptions.DevStoreExceptions;
+import com.rminaya.dev.store.model.dto.BoletaVentaInDto;
 import com.rminaya.dev.store.model.entity.almacen.Kardex;
 import com.rminaya.dev.store.model.entity.almacen.KardexDetalle;
 import com.rminaya.dev.store.model.entity.almacen.Operacion;
 import com.rminaya.dev.store.model.entity.almacen.TipoOperacion;
+import com.rminaya.dev.store.model.entity.common.Producto;
 import com.rminaya.dev.store.model.entity.venta.BoletaVenta;
-import com.rminaya.dev.store.repository.BoletaVentaRepository;
-import com.rminaya.dev.store.repository.KardexDetalleRepository;
-import com.rminaya.dev.store.repository.KardexRepository;
-import com.rminaya.dev.store.repository.TipoOperacionRepository;
+import com.rminaya.dev.store.model.entity.venta.BoletaVentaDetalle;
+import com.rminaya.dev.store.model.entity.venta.Cliente;
+import com.rminaya.dev.store.repository.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,24 +20,32 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BoletaVentaServiceImpl implements BoletaVentaService {
 
     private final BoletaVentaRepository boletaVentaRepository;
+    private final ClienteRespository clienteRespository;
     private final KardexRepository kardexRepository;
     private final KardexDetalleRepository kardexDetalleRepository;
     private final TipoOperacionRepository tipoOperacionRepository;
+    private final ProductoRepository productoRepository;
 
     public BoletaVentaServiceImpl(BoletaVentaRepository boletaVentaRepository,
+                                  ClienteRespository clienteRespository,
                                   KardexRepository kardexRepository,
                                   KardexDetalleRepository kardexDetalleRepository,
-                                  TipoOperacionRepository tipoOperacionRepository) {
+                                  TipoOperacionRepository tipoOperacionRepository,
+                                  ProductoRepository productoRepository) {
         this.boletaVentaRepository = boletaVentaRepository;
+        this.clienteRespository = clienteRespository;
         this.kardexRepository = kardexRepository;
         this.kardexDetalleRepository = kardexDetalleRepository;
         this.tipoOperacionRepository = tipoOperacionRepository;
+        this.productoRepository = productoRepository;
     }
 
     @Override
@@ -52,7 +61,7 @@ public class BoletaVentaServiceImpl implements BoletaVentaService {
     public Page<BoletaVenta> findAll(Integer page) {
         Pageable pageable = PageRequest.of(page, 6, Sort.by("id").descending());
 
-        return this.boletaVentaRepository.findAllByEliminado(false, pageable);
+        return this.boletaVentaRepository.findAll(pageable);
     }
 
     @Override
@@ -65,15 +74,51 @@ public class BoletaVentaServiceImpl implements BoletaVentaService {
 
     @Override
     @Transactional
-    public Long save(BoletaVenta boletaVenta) {
-        // Crear boleta de venta y detalles
+    public Long save(BoletaVentaInDto boletaVentaInDto) {
+
+        Optional<Cliente> cliente = this.clienteRespository.findByNumeroDocumento(boletaVentaInDto.getCliente().getNumeroDocumento());
+
+        BoletaVenta boletaVenta = new BoletaVenta();
+        boletaVenta.setNumero(boletaVentaInDto.getNumero());
         boletaVenta.setFechaEmision(LocalDateTime.now());
 
+        if (cliente.isEmpty()) {
+            Cliente nuevoCliente = new Cliente();
+            nuevoCliente.setNumeroDocumento(boletaVentaInDto.getCliente().getNumeroDocumento());
+            nuevoCliente.setNombre(boletaVentaInDto.getCliente().getNombre());
+            nuevoCliente.setDireccion(boletaVentaInDto.getCliente().getDireccion());
+            nuevoCliente = this.clienteRespository.save(nuevoCliente);
+            boletaVenta.setCliente(nuevoCliente);
+        } else {
+            boletaVenta.setCliente(cliente.orElseThrow());
+        }
+
+        List<BoletaVentaDetalle> detalles = new ArrayList<>();
+
+        boletaVentaInDto.getBoletaVentaDetalles().forEach(boletaVentaDetalleInDto -> {
+            BoletaVentaDetalle boletaVentaDetalle = new BoletaVentaDetalle();
+            boletaVentaDetalle.setCantidad(boletaVentaDetalleInDto.getCantidad());
+
+            Producto producto = this.productoRepository.findById(boletaVentaDetalleInDto.getProducto().getId()).orElseThrow();
+            boletaVentaDetalle.setProducto(producto);
+            boletaVentaDetalle.setPrecioVenta(producto.getPrecioVenta());
+            boletaVentaDetalle.setPrecioCompra(producto.getPrecioCompra());
+
+            boletaVentaDetalle.setBaseImponible(boletaVentaDetalle.calcularBaseImponible());
+            boletaVentaDetalle.setImporteIgv(boletaVentaDetalle.calcularImporteIgv());
+            boletaVentaDetalle.setTotalDetalle(boletaVentaDetalle.calcularTotalDetalle());
+            detalles.add(boletaVentaDetalle);
+        });
+
+        boletaVenta.setBoletaVentaDetalles(detalles);
+
+        /*
         boletaVenta.getBoletaVentaDetalles().forEach(boletaVentaDetalle -> {
             boletaVentaDetalle.setBaseImponible(boletaVentaDetalle.calcularBaseImponible());
             boletaVentaDetalle.setImporteIgv(boletaVentaDetalle.calcularImporteIgv());
             boletaVentaDetalle.setTotalDetalle(boletaVentaDetalle.calcularTotalDetalle());
         });
+        */
 
         boletaVenta.setBaseImponible(boletaVenta.calcularBaseImponible());
         boletaVenta.setImporteIgv(boletaVenta.calcularImporteIgv());
@@ -155,6 +200,12 @@ public class BoletaVentaServiceImpl implements BoletaVentaService {
                         kardexDetalleUpdate = this.kardexDetalleRepository.save(kardexDetalleUpdate);
                         // Volvemos a re asignar el último saldo cantidad
                         nuevoUltimoSaldoCantidad = kardexDetalleUpdate.getSaldoCantidad();
+
+                        // Actualizamos del stock de cada producto
+                        Producto productoBuscado = this.productoRepository.findById(detalle.getProducto().getId())
+                                .orElseThrow(() -> new DevStoreExceptions("No se encontró la producto.", HttpStatus.NOT_FOUND));
+                        productoBuscado.setStock(nuevoUltimoSaldoCantidad);
+                        this.productoRepository.save(productoBuscado);
                     }
                 }
         );
@@ -204,6 +255,7 @@ public class BoletaVentaServiceImpl implements BoletaVentaService {
                     }
 
                     System.out.println("ultimoSaldoCantidad: " + ultimoSaldoCantidad);
+
                     // Iteramos los diferentes "kardex detalles" obtenidos, los cuales serán actualizados con los nuevos saldos
                     for (KardexDetalle detalleByProducto : kardexDetallesByProducto) {
 
@@ -218,6 +270,12 @@ public class BoletaVentaServiceImpl implements BoletaVentaService {
                         kardexDetalleUpdate = this.kardexDetalleRepository.save(kardexDetalleUpdate);
                         // Re asignamos el último saldo cantidad
                         ultimoSaldoCantidad = kardexDetalleUpdate.getSaldoCantidad();
+
+                        // Actualizamos del stock de cada producto
+                        Producto productoBuscado = this.productoRepository.findById(detalle.getProducto().getId())
+                                .orElseThrow(() -> new DevStoreExceptions("No se encontró la producto.", HttpStatus.NOT_FOUND));
+                        productoBuscado.setStock(ultimoSaldoCantidad);
+                        this.productoRepository.save(productoBuscado);
                     }
                 }
         );

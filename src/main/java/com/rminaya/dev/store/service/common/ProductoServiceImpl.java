@@ -4,6 +4,7 @@ import com.rminaya.dev.store.exceptions.DevStoreExceptions;
 import com.rminaya.dev.store.model.dto.ProductoByMarca;
 import com.rminaya.dev.store.model.entity.common.Marca;
 import com.rminaya.dev.store.model.entity.common.Producto;
+import com.rminaya.dev.store.repository.KardexRepository;
 import com.rminaya.dev.store.repository.MarcaRepository;
 import com.rminaya.dev.store.repository.ProductoRepository;
 import org.springframework.data.domain.Page;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -21,11 +23,13 @@ public class ProductoServiceImpl implements ProductoService {
     // ATRIBUTOS - Dependencias
     private final ProductoRepository productoRepository;
     private final MarcaRepository marcaRepository;
+    private final KardexRepository kardexRepository;
 
     // CONSTRUCTOR - Inyección de dependencias
-    public ProductoServiceImpl(ProductoRepository productoRepository, MarcaRepository marcaRepository) {
+    public ProductoServiceImpl(ProductoRepository productoRepository, MarcaRepository marcaRepository, KardexRepository kardexRepository) {
         this.productoRepository = productoRepository;
         this.marcaRepository = marcaRepository;
+        this.kardexRepository = kardexRepository;
     }
 
     @Override
@@ -54,6 +58,20 @@ public class ProductoServiceImpl implements ProductoService {
 
     @Override
     public List<Producto> findByFiltroVenta(String termino) {
+//        List<Producto> productosEncontrados = this.productoRepository.findByFiltroVenta(termino);
+//        productosEncontrados.forEach(producto -> {
+//
+//            Integer kardexDetalleUltimoSaldo = this.kardexRepository.KardexDetalleUltimoSaldoCantidad(
+//                    producto.getId(),
+//                    LocalDateTime.now());
+//            Integer ultimoSaldoCantidad = 0;
+//
+//            if (kardexDetalleUltimoSaldo != null) {
+//                ultimoSaldoCantidad = kardexDetalleUltimoSaldo;
+//            }
+//        });
+
+
         return this.productoRepository.findByFiltroVenta(termino);
     }
 

@@ -5,11 +5,9 @@ import com.rminaya.dev.store.model.entity.almacen.Kardex;
 import com.rminaya.dev.store.model.entity.almacen.KardexDetalle;
 import com.rminaya.dev.store.model.entity.almacen.Operacion;
 import com.rminaya.dev.store.model.entity.almacen.TipoOperacion;
+import com.rminaya.dev.store.model.entity.common.Producto;
 import com.rminaya.dev.store.model.entity.consignacion.GuiaRemision;
-import com.rminaya.dev.store.repository.GuiaRemisionRepository;
-import com.rminaya.dev.store.repository.KardexDetalleRepository;
-import com.rminaya.dev.store.repository.KardexRepository;
-import com.rminaya.dev.store.repository.TipoOperacionRepository;
+import com.rminaya.dev.store.repository.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,15 +27,19 @@ public class GuiaRemisionServiceImpl implements GuiaRemisionService {
     private final KardexRepository kardexRepository;
     private final KardexDetalleRepository kardexDetalleRepository;
     private final TipoOperacionRepository tipoOperacionRepository;
+    private final ProductoRepository productoRepository;
 
     public GuiaRemisionServiceImpl(GuiaRemisionRepository guiaRemisionRepository,
                                    KardexRepository kardexRepository,
                                    KardexDetalleRepository kardexDetalleRepository,
-                                   TipoOperacionRepository tipoOperacionRepository) {
+                                   TipoOperacionRepository tipoOperacionRepository,
+                                   ProductoRepository productoRepository
+                                   ) {
         this.guiaRemisionRepository = guiaRemisionRepository;
         this.kardexRepository = kardexRepository;
         this.kardexDetalleRepository = kardexDetalleRepository;
         this.tipoOperacionRepository = tipoOperacionRepository;
+        this.productoRepository = productoRepository;
     }
 
     @Override
@@ -72,7 +74,16 @@ public class GuiaRemisionServiceImpl implements GuiaRemisionService {
         }
 
         guiaRemision.getGuiaRemisionDetalles()
-                .forEach(guiaRemisionDetalle -> guiaRemisionDetalle.setGuiaRemision(guiaRemision));
+                .forEach(guiaRemisionDetalle -> {
+
+                    guiaRemisionDetalle.setGuiaRemision(guiaRemision);
+                    // Actualizamos los precios de compra y venta de cada producto
+                    Producto productoBuscado = this.productoRepository.findById(guiaRemisionDetalle.getProducto().getId())
+                            .orElseThrow(() -> new DevStoreExceptions("No se encontró la producto.", HttpStatus.NOT_FOUND));
+                    productoBuscado.setPrecioCompra(guiaRemisionDetalle.getPrecioCompra());
+                    productoBuscado.setPrecioVenta(guiaRemisionDetalle.getPrecioVenta());
+                    this.productoRepository.save(productoBuscado);
+                });
 
         return this.guiaRemisionRepository.save(guiaRemision).getId();
     }
@@ -92,7 +103,15 @@ public class GuiaRemisionServiceImpl implements GuiaRemisionService {
         guiaRemisionBuscada.setGuiaRemisionDetalles(guiaRemision.getGuiaRemisionDetalles());
         // asginamos la cabecera de cada guía detalle para que asigne el ID de la cabecera
         guiaRemisionBuscada.getGuiaRemisionDetalles()
-                .forEach(detalle -> detalle.setGuiaRemision(guiaRemisionBuscada));
+                .forEach(detalle -> {
+                    detalle.setGuiaRemision(guiaRemisionBuscada);
+                    // Actualizamos los precios de compra y venta de cada producto
+                    Producto productoBuscado = this.productoRepository.findById(detalle.getProducto().getId())
+                            .orElseThrow(() -> new DevStoreExceptions("No se encontró la producto.", HttpStatus.NOT_FOUND));
+                    productoBuscado.setPrecioCompra(detalle.getPrecioCompra());
+                    productoBuscado.setPrecioVenta(detalle.getPrecioVenta());
+                    this.productoRepository.save(productoBuscado);
+                });
 
         // guardamos los cambios
         return this.guiaRemisionRepository.save(guiaRemisionBuscada).getId();
@@ -114,7 +133,7 @@ public class GuiaRemisionServiceImpl implements GuiaRemisionService {
         kardex.setFechaEmision(this.generarLocalDateTime(guiaRemisionBuscada.getFechaEmision()));
         // Obtenemos el tipo operación para una "consignación recibida"
         TipoOperacion tipoOperacion = tipoOperacionRepository.findById(Operacion.CONSIGNACION_RECIBIDA.getId())
-                .orElseThrow(() -> new DevStoreExceptions("No se encontró la la operación.", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new DevStoreExceptions("No se encontró la operación.", HttpStatus.NOT_FOUND));
         kardex.setTipoOperacion(tipoOperacion);
 
         // Creamos el kardex para luego añadir sus detalles y volver a guardarlo
@@ -122,7 +141,9 @@ public class GuiaRemisionServiceImpl implements GuiaRemisionService {
         this.kardexRepository.save(kardex);
 
         // Iteramos los detalles de la guía para registrar su "kardex detalle" y actualizar los saldos correspondientes.
-        guiaRemisionBuscada.getGuiaRemisionDetalles().forEach(
+        guiaRemisionBuscada.getGuiaRemisionDetalles().stream()
+                .filter(guiaRemisionDetalle -> guiaRemisionDetalle.getEliminado().equals(false))
+                .forEach(
                 detalle -> {
                     // Obtenemos el ultimo saldo del producto a registrar
                     Integer kardexDetalleUltimoSaldo = this.kardexRepository.KardexDetalleUltimoSaldoCantidad(
@@ -159,7 +180,7 @@ public class GuiaRemisionServiceImpl implements GuiaRemisionService {
                     kardex.addDetalle(kardexDetalle);
 
                     // TODO - Esto tal vez funcione mal, ya que los native query tienen problema al parsear a objetos al devolver un "*" en el select
-                    // Obtengo los diferentes "kardex detalles" a actualizar según el nuevo moviemiento
+                    // Obtengo los diferentes "kardex detalles" a actualizar según el nuevo movimiento
                     List<KardexDetalle> kardexDetallesByProducto = this.kardexDetalleRepository.detallesByProductoAndFechaEmision(
                             detalle.getProducto().getId(),
                             this.generarLocalDateTime(guiaRemisionBuscada.getFechaEmision()));
@@ -167,6 +188,12 @@ public class GuiaRemisionServiceImpl implements GuiaRemisionService {
 
                     // Re asignamos el último saldo cantidad
                     Integer nuevoUltimoSaldoCantidad = kardexDetalle.getSaldoCantidad();
+
+                    // Actualizamos del stock de cada producto
+                    Producto productoBuscado = this.productoRepository.findById(detalle.getProducto().getId())
+                            .orElseThrow(() -> new DevStoreExceptions("No se encontró la producto.", HttpStatus.NOT_FOUND));
+                    productoBuscado.setStock(nuevoUltimoSaldoCantidad);
+                    this.productoRepository.save(productoBuscado);
 
                     // Iteramos los diferentes "kardex detalles" obtenidos, los cuales serán actualizados con los nuevos saldos
                     for (KardexDetalle detalleByProducto : kardexDetallesByProducto) {
@@ -183,6 +210,7 @@ public class GuiaRemisionServiceImpl implements GuiaRemisionService {
                         kardexDetalleUpdate = this.kardexDetalleRepository.save(kardexDetalleUpdate);
                         // Volvemos a re asignar el último saldo cantidad
                         nuevoUltimoSaldoCantidad = kardexDetalleUpdate.getSaldoCantidad();
+
                     }
                 }
         );
@@ -206,7 +234,9 @@ public class GuiaRemisionServiceImpl implements GuiaRemisionService {
         this.guiaRemisionRepository.save(guiaRemisionBuscada);
 
         // Iteramos los detalles de la guía, para buscar los detalles de los kardex y actualizar sus saldos
-        guiaRemisionBuscada.getGuiaRemisionDetalles().forEach(
+        guiaRemisionBuscada.getGuiaRemisionDetalles().stream()
+                .filter(guiaRemisionDetalle -> guiaRemisionDetalle.getEliminado().equals(false))
+                .forEach(
                 detalle -> {
                     // Obtengo los diferentes "kardex detalles" a actualizar según el nuevo moviemiento
                     List<KardexDetalle> kardexDetallesByProducto = this.kardexDetalleRepository.detallesByProductoAndFechaEmision(
@@ -226,6 +256,12 @@ public class GuiaRemisionServiceImpl implements GuiaRemisionService {
                     }
 
                     System.out.println("ultimoSaldoCantidad: " + ultimoSaldoCantidad);
+
+                    // Actualizamos del stock de cada producto
+                    Producto productoBuscado = this.productoRepository.findById(detalle.getProducto().getId())
+                            .orElseThrow(() -> new DevStoreExceptions("No se encontró la producto.", HttpStatus.NOT_FOUND));
+                    productoBuscado.setStock(ultimoSaldoCantidad);
+                    this.productoRepository.save(productoBuscado);
 
                     // Iteramos los diferentes "kardex detalles" obtenidos, los cuales serán actualizados con los nuevos saldos
                     for (KardexDetalle detalleByProducto : kardexDetallesByProducto) {
